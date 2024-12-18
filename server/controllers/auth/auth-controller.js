@@ -6,7 +6,12 @@ class AuthController {
      static async authRegister(req, res){
         const {userName, email, password} = req.body;
         try {
-            const user = await User.findOne({userName, email});
+            // or operator return a user matched with either of username or email
+            const user = await User.findOne({
+                $or:[
+                    {userName},{email}
+                ]
+            });
             // console.log(user);
             
             if(user){
