@@ -7,15 +7,14 @@ class AuthController {
         const {userName, email, password} = req.body;
         try {
             // or operator return a user matched with either of username or email
-            const user = await User.findOne({
+            const checkUser = await User.findOne({
                 $or:[
                     {userName},{email}
                 ]
             });
-            // console.log(user);
             
-            if(user){
-                return res.status(200).json({
+            if(checkUser){
+                return res.json({
                     success:false,
                     message:"Either username or email is alreay used please try another one."
                 })
@@ -44,13 +43,26 @@ class AuthController {
     // function to handle login functionality
     static async authLogin(req, res){
         const {email, password} = req.body;
+        
         try {
+            const user = await User.findOne({email});
+            if(!user){
+                return res.status(404).json({success:false, message:"Either email or password do not match"})
+            }
+            const comparePassword = await bcrypt.compare(password, user.password);
+            if(!comparePassword){
+                return res.status(404).json({
+                    success:false,
+                    message:"Credendials do not match"
+                })
+            }
+
             
         } catch (error) {
             console.log(error);
             res.status(500).json({
                 success:false,
-                message:"Invalid credentials."
+                message:"Some thing went wrong please try leter."
             })
             
         }

@@ -28,7 +28,8 @@ const Register = () => {
       }
       else{
         toast({
-          title:data?.payload?.message
+          title:data?.payload?.message,
+          variant:"destructive"
         })
       }
     });
