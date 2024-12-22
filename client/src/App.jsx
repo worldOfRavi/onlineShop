@@ -16,10 +16,12 @@ import UserAccount from "./user-view/account";
 import UserCheckout from "./user-view/checkout";
 import UnAuthPage from "./pages/unauth-page";
 import CheckAuth from "./components/common/check-auth";
+import { useSelector } from "react-redux";
 
 const App = () => {
-  const isAuthenticated = false;
-  const user = null;
+
+  const {isAuthenticated, user}  = useSelector((state)=>state.authReducer);
+  
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       {/* common components */}

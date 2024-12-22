@@ -48,11 +48,11 @@ class AuthController {
         try {
             const user = await User.findOne({email});
             if(!user){
-                return res.status(404).json({success:false, message:"Either email or password do not match"})
+                return res.json({success:false, message:"Either email or password do not match"})
             }
             const comparePassword = await bcrypt.compare(password, user.password);
             if(!comparePassword){
-                return res.status(404).json({
+                return res.json({
                     success:false,
                     message:"Credendials do not match"
                 })

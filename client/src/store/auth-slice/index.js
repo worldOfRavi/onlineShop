@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, isFulfilled } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  isAuthnticated: false,
+  isAuthenticated: false,
   isLaoding: false,
   user: null,
 };
@@ -22,6 +22,17 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const loginUser = createAsyncThunk('/auth/login',
+  async (formData) =>{
+    const response  = await axios.post("http://localhost:5000/api/auth/login",
+      formData,
+      {withCredentials:true}
+    );
+    return response.data;
+  }
+)
+
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -34,11 +45,21 @@ const authSlice = createSlice({
     }).addCase(registerUser.fulfilled, (state, action)=>{
         state.isLaoding = false;
         state.user = null;
-        state.isAuthnticated = false
+        state.isAuthenticated = false
     }).addCase(registerUser.rejected, (state)=>{
         state.isLaoding = false;
         state.user = null;
-        state.isAuthnticated  = false;
+        state.isAuthenticated  = false;
+    }).addCase(loginUser.pending, (state)=>{
+      state.isLaoding = true;
+    }).addCase(loginUser.fulfilled, (state, action)=>{
+      state.isLaoding = false,
+      state.user = action.payload.success  ? action.payload.user : null
+      state.isAuthenticated = action.payload.success
+    }).addCase(loginUser.rejected, (state)=>{
+      state.isLaoding = false;
+        state.user = null;
+        state.isAuthenticated  = false;
     })
   }
 });
