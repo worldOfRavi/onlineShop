@@ -3,6 +3,10 @@ import { Navigate, useLocation } from "react-router-dom";
 
 const CheckAuth = ({ isAuthenticated, user, children }) => {
   const location = useLocation();
+  // if the user visit the site for the first time
+  // if(location.pathname.includes("http://localhost:5173")){
+  //   return <Navigate to={"/auth/login"} />
+  // }
   //   if the user is not authenticated and tried to access other page
   if (
     !isAuthenticated &&

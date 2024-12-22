@@ -1,6 +1,7 @@
 import User from "../../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+const secretKey = process.env.SECRETKEY;
 class AuthController {
     // function for handling registeration.
      static async authRegister(req, res){
@@ -56,6 +57,20 @@ class AuthController {
                     message:"Credendials do not match"
                 })
             }
+            // create token
+            const token = jwt.sign({
+                id:user._id, role:user.role, email:user.email
+            }, secretKey, {expiresIn:"60m"});
+
+            // extract user info excluding the password
+            const {password:pas, ...rest} = user._doc;
+            
+            // sending cookie with response
+            res.cookie('token', token, {httpOnly:true, secrue:false}).status(200).json({
+                success:true,
+                message:"Logged in successfully",
+                user:rest
+            })
 
             
         } catch (error) {
