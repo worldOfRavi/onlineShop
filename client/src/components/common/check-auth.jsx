@@ -3,10 +3,8 @@ import { Navigate, useLocation } from "react-router-dom";
 
 const CheckAuth = ({ isAuthenticated, user, children }) => {
   const location = useLocation();
-  // if the user visit the site for the first time
-  // if(location.pathname.includes("http://localhost:5173")){
-  //   return <Navigate to={"/auth/login"} />
-  // }
+  
+  
   //   if the user is not authenticated and tried to access other page
   if (
     !isAuthenticated &&
@@ -32,7 +30,7 @@ const CheckAuth = ({ isAuthenticated, user, children }) => {
 
 //   if the user if authenticated but tris to access unauthorized pages
 if(isAuthenticated && user?.role != 'admin' && location.pathname.includes("admin")){
-    return <Navigate to={"/unauth-page"} />
+    return <Navigate to={"/unauth-page"} /> 
 }
 // if the user is authenticated as admin but tires to access shopping view
 

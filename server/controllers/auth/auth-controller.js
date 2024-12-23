@@ -83,8 +83,30 @@ class AuthController {
         }
     }
 
-    // logut function
-    static async authLogout(req, res){
+   
+
+    // function to verify user authentication
+    static async authMiddleware(req, res, next){
+        const token = req.cookies.token;
+        if(!token) return res.status(401).json({success:false, message:"Unathorized user"});
+        
+        try {
+            jwt.verify(token, secretKey, (err,user)=>{
+                if(err) return res.status(401).json({success:false, message:"Unathorized user"});
+                res.status(200).json({success:true, message:"Authenticated user", user})
+                next();
+            })
+
+            const decoded = jwt.verify(token, secretKey);
+            req.user = decoded;
+            next();
+        } catch (error) {
+            res.status(500).json({success:false, message:"Unathorized user"})
+        }
+    }
+
+     // logout function
+     static async authLogout(req, res){
         try {
             res.clearCookie("token").status(200).json({
                 success:true,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import AuthLayout from "./components/auth/layout";
 import Login from "./pages/auth/login";
@@ -16,12 +16,20 @@ import UserAccount from "./user-view/account";
 import UserCheckout from "./user-view/checkout";
 import UnAuthPage from "./pages/unauth-page";
 import CheckAuth from "./components/common/check-auth";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { authCheck } from "./store/auth-slice";
 
 const App = () => {
 
-  const {isAuthenticated, user}  = useSelector((state)=>state.authReducer);
+  const {isAuthenticated, isLoading, user}  = useSelector((state)=>state.authReducer);
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(authCheck())
+  },[dispatch])
   
+
+  if(isLoading) return <div>Loading...</div>
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       {/* common components */}
@@ -40,7 +48,7 @@ const App = () => {
           <Route path="products" element={<AdminProducts />} />
           <Route path="feature" element={<AdminFeatures />} />
         </Route>
-        <Route path="user" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}><Userlayout /></CheckAuth>}>
+        <Route path="/user" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}><Userlayout /></CheckAuth>}>
           <Route path="home" element={<UserHome />} />
           <Route path="listing" element={<UserListing />} />
           <Route path="account" element={<UserAccount />} />
