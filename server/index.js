@@ -28,9 +28,17 @@ app.use(express.json());
 
 // this router contains all app routes
 app.use(appRouter);
-// app.use("/",(req, res)=>{
-//     res.json("Hello from server");
-// })
+
+// handle error middleware
+app.use((err, req, res, next)=>{
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Internal Server error';
+    return res.status(statusCode).json({
+        success:false,
+        statusCode,
+        message,
+    })
+})
 
 
 connectDB().then(()=>{

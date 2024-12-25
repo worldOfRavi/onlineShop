@@ -1,10 +1,11 @@
 import User from "../../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import handleError from "../../utils/error.js";
 const secretKey = process.env.SECRETKEY;
 class AuthController {
     // function for handling registeration.
-     static async authRegister(req, res){
+     static async authRegister(req, res, next){
         const {userName, email, password} = req.body;
         try {
             // or operator return a user matched with either of username or email
@@ -15,10 +16,11 @@ class AuthController {
             });
             
             if(checkUser){
-                return res.json({
-                    success:false,
-                    message:"Either username or email is alreay used please try another one."
-                })
+                // return res.json({
+                //     success:false,
+                //     message:"Either username or email is alreay used please try another one."
+                // })
+                return next(handleError(409,"Either username or email is alreay used please try another one."))
             }
 
             const hashedPassword = await bcrypt.hash(password, 12);
@@ -33,10 +35,7 @@ class AuthController {
         })
         } catch (error) {
             console.log(error);
-            res.status(500).json({
-                success:false,
-                message:"Some error occured"
-            })
+            next(error)
             
         }
     }
@@ -48,14 +47,12 @@ class AuthController {
         try {
             const user = await User.findOne({email});
             if(!user){
-                return res.json({success:false, message:"Either email or password do not match"})
+                return next(handleError(404, "Either email or password do not match"))
             }
             const comparePassword = await bcrypt.compare(password, user.password);
             if(!comparePassword){
-                return res.json({
-                    success:false,
-                    message:"Credendials do not match"
-                })
+                return next(handleError(404, "Credentials do not match"))
+                
             }
             // create token
             const token = jwt.sign({
@@ -71,15 +68,10 @@ class AuthController {
                 message:"Logged in successfully",
                 user:rest
             })
-
             
         } catch (error) {
             console.log(error);
-            res.status(500).json({
-                success:false,
-                message:"Some thing went wrong please try leter."
-            })
-            
+            next(error)
         }
     }
 
@@ -88,11 +80,11 @@ class AuthController {
     // function to verify user authentication
     static async authMiddleware(req, res, next){
         const token = req.cookies.token;
-        if(!token) return res.status(401).json({success:false, message:"Unathorized user"});
+        if(!token) return next(handleError(401, "Unathorized user"))
         
         try {
             jwt.verify(token, secretKey, (err,user)=>{
-                if(err) return res.status(401).json({success:false, message:"Unathorized user"});
+                if(err) return next(handleError(401, "Unathorized user"))
                 res.status(200).json({success:true, message:"Authenticated user", user})
                 next();
             })
@@ -101,7 +93,7 @@ class AuthController {
             req.user = decoded;
             next();
         } catch (error) {
-            res.status(500).json({success:false, message:"Unathorized user"})
+            next(error)
         }
     }
 
@@ -114,10 +106,7 @@ class AuthController {
             })
         } catch (error) {
             console.log(error);
-            res.status(500).json({
-                success:false,
-                message:"Something went wrong"
-            })
+            next(error)
             
         }
     }

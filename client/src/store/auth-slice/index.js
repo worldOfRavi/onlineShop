@@ -10,41 +10,95 @@ const initialState = {
 // register action
 export const registerUser = createAsyncThunk(
   "/auth/register",
-  async (formData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/auth/register",
-      formData,
-      {
-        withCredentials: true,
+
+
+  /*
+  Note: with axios any status code other than 2XX treated as error and the request gets rejected which results payload as undefined.
+  to handle it pass {rejectWithValue} as additional parameter in the function and use it in the catch blog to fetch the payload even though the request is rejected.
+
+  while fetch resolves any status code.
+  */
+  async (formData, {rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+       // Axios error response
+       if (error.response) {
+        // Extract error message and reject with it
+        const { data } = error.response;
+        return rejectWithValue(data); // Pass the payload to Redux Toolkit
+      } else {
+        console.error("Unexpected error:", error.message);
+        throw new Error("An unexpected error occurred.");
       }
-    );
-    return response.data;
+    }
+
+  //   const res = await fetch("http://localhost:5000/api/auth/register",{
+  //     method:"POST",
+  //     headers:{
+  //         "Content-Type":"application/json"
+  //     },
+  //     body:JSON.stringify(formData)
+  // })
+
+  // const data = await res.json();
+  // return data;
+  
   }
 );
 
 // login action
 export const loginUser = createAsyncThunk('/auth/login',
-  async (formData) =>{
-    const response  = await axios.post("http://localhost:5000/api/auth/login",
-      formData,
-      {withCredentials:true}
-    );
-    return response.data;
+  async (formData, {rejectWithValue}) =>{
+    try {
+      const response  = await axios.post("http://localhost:5000/api/auth/login",
+        formData,
+        {withCredentials:true}
+      );
+      return response.data;
+    } catch (error) {
+      if(error.response){
+        const {data} = error.response;
+        return rejectWithValue(data)
+      }
+      else{
+        console.error("Unexpected error:", error.message);
+        throw new Error("An unexpected error occurred.");
+      }
+    }
   }
 )
 
 
 // authentiaction action
 export const authCheck = createAsyncThunk('/auth/authcheck',
-  async () =>{
-    const response  = await axios.get("http://localhost:5000/api/auth/auth-check",
-      {withCredentials:true,
-        headers:{
-          'Cache-Control':'no-store, no-cache, must-revalidate, proxy-revalidate'
+  async ({rejectWithValue}) =>{
+    try {
+      const response  = await axios.get("http://localhost:5000/api/auth/auth-check",
+        {withCredentials:true,
+          headers:{
+            'Cache-Control':'no-store, no-cache, must-revalidate, proxy-revalidate'
+          }
         }
+      );
+      return response.data;
+    } catch (error) {
+      if(error.response){
+        const {data}  = error.response;
+        return rejectWithValue(data);
       }
-    );
-    return response.data;
+      else{
+        console.log("Unexpected error", error.message);
+        throw new Error("An unexpected error occured");
+      }
+    }
   }
 )
 
@@ -62,7 +116,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false
-    }).addCase(registerUser.rejected, (state)=>{
+    }).addCase(registerUser.rejected, (state,action)=>{
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated  = false;

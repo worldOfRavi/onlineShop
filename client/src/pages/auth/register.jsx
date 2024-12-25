@@ -19,7 +19,8 @@ const Register = () => {
 
   function onSubmit(event){
     event.preventDefault();
-    dispatch(registerUser(formData)).then((data)=>{
+    // dispatch(registerUser(formData))
+      dispatch(registerUser(formData)).then((data)=>{
       if(data?.payload?.success){
         toast({
           title: data?.payload?.message
@@ -32,7 +33,7 @@ const Register = () => {
           variant:"destructive"
         })
       }
-    });
+    })
     
   }
   return (
