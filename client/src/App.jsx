@@ -18,18 +18,25 @@ import UnAuthPage from "./pages/unauth-page";
 import CheckAuth from "./components/common/check-auth";
 import { useDispatch, useSelector } from "react-redux";
 import { authCheck } from "./store/auth-slice";
+import { Skeleton } from "@/components/ui/skeleton"
 
 const App = () => {
 
   const {isAuthenticated, isLoading, user}  = useSelector((state)=>state.authReducer);
+
   const dispatch = useDispatch();
 
   useEffect(()=>{
+    
     dispatch(authCheck())
-  },[dispatch])
-  
+  },[dispatch]);
 
-  if(isLoading) return <div>Loading...</div>
+  // console.log(isAuthenticated, isLoading, user);
+
+  if(isLoading) return <div className="w-sceen h-screen flex justify-center items-center">
+    <Skeleton className="w-[300px] h-[100px] rounded-full bg-slate-500" />
+  </div>
+
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       {/* common components */}

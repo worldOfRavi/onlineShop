@@ -79,7 +79,7 @@ export const loginUser = createAsyncThunk('/auth/login',
 
 // authentiaction action
 export const authCheck = createAsyncThunk('/auth/authcheck',
-  async ({rejectWithValue}) =>{
+  async (_, {rejectWithValue}) =>{
     try {
       const response  = await axios.get("http://localhost:5000/api/auth/auth-check",
         {withCredentials:true,
@@ -88,7 +88,9 @@ export const authCheck = createAsyncThunk('/auth/authcheck',
           }
         }
       );
+      console.log(response);
       return response.data;
+
     } catch (error) {
       if(error.response){
         const {data}  = error.response;

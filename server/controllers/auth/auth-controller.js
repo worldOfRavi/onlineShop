@@ -89,8 +89,8 @@ class AuthController {
                 next();
             })
 
-            const decoded = jwt.verify(token, secretKey);
-            req.user = decoded;
+            // const decoded = jwt.verify(token, secretKey);
+            // req.user = decoded;
             next();
         } catch (error) {
             next(error)
