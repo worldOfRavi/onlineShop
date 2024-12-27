@@ -88,7 +88,6 @@ export const authCheck = createAsyncThunk('/auth/authcheck',
           }
         }
       );
-      console.log(response);
       return response.data;
 
     } catch (error) {

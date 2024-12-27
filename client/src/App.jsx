@@ -53,7 +53,7 @@ const App = () => {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="products" element={<AdminProducts />} />
-          <Route path="feature" element={<AdminFeatures />} />
+          <Route path="features" element={<AdminFeatures />} />
         </Route>
         <Route path="/user" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}><Userlayout /></CheckAuth>}>
           <Route path="home" element={<UserHome />} />
