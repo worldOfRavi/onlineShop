@@ -103,6 +103,28 @@ export const authCheck = createAsyncThunk('/auth/authcheck',
   }
 )
 
+// logout function
+
+export const authLogout = createAsyncThunk("/auth/logout",
+  async (_, {rejectWithValue}) =>{
+      try {
+        const response = await axios.post("http://localhost:5000/api/auth/logout",
+        {withCredentials:true}
+      );
+      return response.data;
+      } catch (error) {
+        if(error.response){
+          const {data} = error.response;
+          return rejectWithValue(data)
+        }else{
+          console.log("Unexpected error occured ", error.message);
+          throw new Error("An unexpected error occured");
+        }
+      }
+  }
+
+)
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -138,6 +160,16 @@ const authSlice = createSlice({
       state.user = action.payload.success  ? action.payload.user : null
       state.isAuthenticated = action.payload.success
     }).addCase(authCheck.rejected, (state)=>{
+      state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated  = false;
+    }).addCase(authLogout.pending, (state)=>{
+      state.isLoading = true;
+    }).addCase(authLogout.fulfilled, (state, action)=>{
+      state.isLoading = false,
+      state.user = null
+      state.isAuthenticated = action.payload.success
+    }).addCase(authLogout.rejected, (state)=>{
       state.isLoading = false;
         state.user = null;
         state.isAuthenticated  = false;
