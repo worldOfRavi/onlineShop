@@ -24,6 +24,10 @@ const initialFormData = {
 const AdminProducts = () => {
   const [openCreateProductDialog, setOpenCreateProductDialog] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
+  // product image upload component is separate from this file but the state is managed in this file
+  const [imageFile, setImageFile]  = useState(null);
+  // url of lastly uploaded file
+  const [uploadedImageUrl, setUploadedImageUrl]  = useState("");
 
   const handleCreateNewProduct = (event) => {};
 
@@ -44,7 +48,8 @@ const AdminProducts = () => {
               <SheetTitle>Add New Product</SheetTitle>
             </SheetHeader>
             <div className="py-6">
-            <ProductImageUpload />
+            {/* image upload component */}
+            <ProductImageUpload file={imageFile} setFile = {setImageFile} uploadedImageUrl={uploadedImageUrl} setUploadedImageUrl={setUploadedImageUrl} />
             <CommonForm
               formControls={addProductFormElements}
               formData={formData}
