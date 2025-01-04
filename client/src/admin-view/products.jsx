@@ -11,23 +11,25 @@ import { addProductFormElements } from "../config/index";
 import ProductImageUpload from "@/components/admin-view/image-upload";
 
 const initialFormData = {
-  image:null,
-  title:"",
-  description:"",
-  category:"",
-  brand:"",
-  price:"",
-  salePrice:"",
-  totalStock:""
-}
+  image: null,
+  title: "",
+  description: "",
+  category: "",
+  brand: "",
+  price: "",
+  salePrice: "",
+  totalStock: "",
+};
 
 const AdminProducts = () => {
   const [openCreateProductDialog, setOpenCreateProductDialog] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   // product image upload component is separate from this file but the state is managed in this file
-  const [imageFile, setImageFile]  = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   // url of lastly uploaded file
-  const [uploadedImageUrl, setUploadedImageUrl]  = useState("");
+  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+
+  const [imageLoading, setImageLoading] = useState(false);
 
   const handleCreateNewProduct = (event) => {};
 
@@ -48,15 +50,21 @@ const AdminProducts = () => {
               <SheetTitle>Add New Product</SheetTitle>
             </SheetHeader>
             <div className="py-6">
-            {/* image upload component */}
-            <ProductImageUpload file={imageFile} setFile = {setImageFile} uploadedImageUrl={uploadedImageUrl} setUploadedImageUrl={setUploadedImageUrl} />
-            <CommonForm
-              formControls={addProductFormElements}
-              formData={formData}
-              setFormData={setFormData}
-              onSubmit={handleCreateNewProduct}
-              buttonText="Add Product"
-            />
+              {/* image upload component */}
+              <ProductImageUpload
+                file={imageFile}
+                setFile={setImageFile}
+                uploadedImageUrl={uploadedImageUrl}
+                setUploadedImageUrl={setUploadedImageUrl}
+                setImageLoading={setImageLoading}
+              />
+              <CommonForm
+                formControls={addProductFormElements}
+                formData={formData}
+                setFormData={setFormData}
+                onSubmit={handleCreateNewProduct}
+                buttonText="Add Product"
+              />
             </div>
           </SheetContent>
         </Sheet>
