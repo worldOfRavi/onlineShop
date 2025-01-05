@@ -50,8 +50,8 @@ export const addProduct = async (req, res, next) => {
 
     res.status(201).json({
         success:true,
-        message:"Product created successfully",
-        newProduct
+        message:"Product added successfully",
+        data:newProduct
     })
   } catch (error) {
     console.log(error.message);
@@ -66,7 +66,7 @@ export const fetchAllProducts = async(req, res, next) => {
     const listOfProduct = await Product.find({});
     res.status(200).json({
         success:true,
-        listOfProduct
+        data:listOfProduct
     })
   } catch (error) {
     console.log(error.message);

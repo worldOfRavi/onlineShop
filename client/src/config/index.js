@@ -63,7 +63,7 @@ export const addProductFormElements = [
         name:"category",
         componentType:"select",
         options:[
-            {id:'men', lable:"Men"},
+            {id:'men', label:"Men"},
             {id:"women",label:"Women"},
             {id:"kids",label:"Kids"},
             {id:"accessories",label:"Accessories"},
@@ -76,7 +76,7 @@ export const addProductFormElements = [
         name:"brand",
         componentType:"select",
         options:[
-            {id:'nike', lable:"Nike"},
+            {id:'nike', label:"Nike"},
             {id:"addidas",label:"Addidas"},
             {id:"puma",label:"Puma"},
             {id:"levis",label:"Levis"},
