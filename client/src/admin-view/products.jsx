@@ -12,6 +12,7 @@ import ProductImageUpload from "@/components/admin-view/image-upload";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewProduct, fetchAllProducts } from "@/store/admin/product-slice";
 import { useToast } from "@/hooks/use-toast";
+import ProductTile from "./Product-tile";
 
 const initialFormData = {
   image: null,
@@ -70,7 +71,6 @@ const AdminProducts = () => {
     dispatch(fetchAllProducts())
   },[dispatch]);
 
-  // console.log(productList);
   
 
   return (
@@ -81,7 +81,12 @@ const AdminProducts = () => {
         </Button>
       </div>
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        <Sheet
+        {/* Products will appear here */}
+        {
+          productList && productList.length>0 ? productList.map((productItem, id)=><ProductTile key={id.toString()} product={productItem} />) : ""
+        }
+      </div>
+      <Sheet
           open={openCreateProductDialog}
           onOpenChange={() => setOpenCreateProductDialog(false)}
         >
@@ -109,7 +114,6 @@ const AdminProducts = () => {
             </div>
           </SheetContent>
         </Sheet>
-      </div>
     </Fragment>
   );
 };

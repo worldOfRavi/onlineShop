@@ -8,8 +8,6 @@ import { Button } from "../ui/button";
 const CommonForm = ({ formControls, formData, setFormData, onSubmit, buttonText }) => {
     // function to render the input  based on the component Type
     function renderInputsByComponentType(getControlItem){
-        console.log(getControlItem);
-        
         let element = null;
         const value = formData[getControlItem.name] || "";
         switch (getControlItem.componentType) {
