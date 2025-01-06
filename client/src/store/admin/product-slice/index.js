@@ -60,7 +60,11 @@ export const fetchAllProducts = createAsyncThunk(
 
 export const editProduct = createAsyncThunk(
   "/products/editProduct",
-  async (id, formData, { rejectWithValue }) => {
+  async ({id, formData}, thunkAPI) => {
+
+    // in createAsyncThunk the second parameter is thunkAPI, so close all the other parameter into an object and make the thunkAPI as the second parameter
+    const { rejectWithValue } = thunkAPI
+    
     try {
       const response = await axios.put(
         `http://localhost:5000/api/admin/products/edit/${id}`, formData,
