@@ -12,6 +12,7 @@ import ProductImageUpload from "@/components/admin-view/image-upload";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addNewProduct,
+  deleteProduct,
   editProduct,
   fetchAllProducts,
 } from "@/store/admin/product-slice";
@@ -40,6 +41,8 @@ const AdminProducts = () => {
   const [imageLoading, setImageLoading] = useState(false);
   // state to hold the product id to be edited
   const [currentEditedId, setCurrentEditedId] = useState(null);
+
+
 
   const dispatch = useDispatch();
   const { productList } = useSelector((state) => state.productReducer);
@@ -93,6 +96,20 @@ const AdminProducts = () => {
       .every((item) => item);
   }
 
+  // function to delete a product
+  function deleteSelectedProduct(getProductId){
+    
+    dispatch(deleteProduct(getProductId)).then((data)=>{
+      
+      if(data?.payload?.success){
+        toast({
+          title:data?.payload?.message
+        })
+        dispatch(fetchAllProducts())
+      }
+    })
+  }
+
   // fetch all product data
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -115,6 +132,7 @@ const AdminProducts = () => {
                 setCurrentEditedId={setCurrentEditedId}
                 setOpenCreateProductDialog={setOpenCreateProductDialog}
                 product={productItem}
+                deleteProduct={deleteSelectedProduct}
               />
             ))
           : ""}
