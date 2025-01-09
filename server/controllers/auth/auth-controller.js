@@ -62,6 +62,7 @@ class AuthController {
           id: user._id,
           role: user.role,
           email: user.email,
+          userName:user.userName
         },
         secretKey,
         { expiresIn: "60m" }
