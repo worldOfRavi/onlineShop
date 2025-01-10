@@ -45,7 +45,7 @@ const AdminProducts = () => {
 
 
   const dispatch = useDispatch();
-  const { productList } = useSelector((state) => state.productReducer);
+  const { productList } = useSelector((state) => state.adminProductReducer);
 
   const { toast } = useToast();
 

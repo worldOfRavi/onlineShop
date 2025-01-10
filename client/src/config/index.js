@@ -143,8 +143,29 @@ export const shoppingViewMenuItems = [
     },
 ]
 
-// product filters options
 
+// mapping category filter
+export const categoryFilterMap = {
+    "men":"Men",
+    "women":"Women",
+    "kids":"Kids",
+    "accessories":"Accessories",
+    "footwear":"Footwear"
+}
+
+// mapping brand filter
+export const brandFilterMap = {
+    "nike":"Nike",
+    "addidas":"Addidas",
+    "puma":"Puma",
+    "levis":"Levi's",
+    "h&m":"H&M",
+    "zara":"Zara"
+}
+
+
+
+// product filters options
 export const filterOptions = {
     category :[
         {id:"men", label:"Men"},
