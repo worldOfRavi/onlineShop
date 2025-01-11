@@ -10,11 +10,22 @@ const initialState = {
 // function to fetch the filterproducts from the user view
 export const fetchFilteredProducts = createAsyncThunk(
     "user/product",
-    async(_,{rejectWithValue})=>{
+    async({filterParams, sortParams},{rejectWithValue})=>{
+        
         try {
-            const response  = await axios.get("http://localhost:5000/api/user/products/get",{
+            // if it optional that we can pass the filter and sort in as query including it in the URL
+            const query = new URLSearchParams({
+                ...filterParams,
+                sortBy:sortParams
+            })
+            
+            const response  = await axios.get(`http://localhost:5000/api/user/products/get?${query}`,{
                 withCredentials:true
             });
+            // else we can pass the filters and the sort as params separate from the URL as the additional data
+            // const response  = await axios.get(`http://localhost:5000/api/user/products/get`,{params:{...filterParams, sort:sortParams}},{
+            //     withCredentials:true
+            // });
              return response.data
              
         } catch (error) {

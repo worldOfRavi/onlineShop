@@ -1,28 +1,104 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProductFilter from './filter'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ArrowUpDownIcon } from 'lucide-react'
-import { filterOptions, sortOptions } from '@/config'
-import { use } from 'react'
+import { sortOptions } from '@/config'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAllProducts } from '@/store/admin/product-slice'
 import UserProductTile from './product-tile'
 import { fetchFilteredProducts } from '@/store/user/product-slice'
+import { useSearchParams } from 'react-router-dom'
 
 const UserListing = () => {
 const dispatch = useDispatch();
 const {productList} = useSelector(state=>state.userProductReducer)
-// console.log(productList);
+// state to holds the filter options
+const [filters, setFilters] = useState({});
+// state to hold the sort option
+const [sort, setSort] = useState(null);
+
+const [searchParams, setSearchParams] = useSearchParams();
+
+// function to handle the changes in sort options
+function handleSort(value){
+  setSort(value)  
+}
+
+// function to handle the change in filter options
+function handleFilter(getSectionId, getCurrentOption){
+  // console.log(getSectionId, getCurrentOption);
+  let cpyFilters = {...filters};
+  // find the category if it present in the filter object or not, if not set the getSectionId as key and  getCurrentOption in an array as value of object
+  const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
+  if(indexOfCurrentSection === -1){
+    cpyFilters = {
+      ...cpyFilters,
+    [getSectionId] : [getCurrentOption]
+    }
+
+    // but if the getSectionId already present in the object then it checks if the option is present in the value array or not, if not it push it to the array or else delete it from the object.
+  }else{
+    const indexOfCurrentOption = cpyFilters[getSectionId].indexOf(getCurrentOption);
+    if(indexOfCurrentOption === -1) cpyFilters[getSectionId].push(getCurrentOption)
+    else cpyFilters[getSectionId].splice(indexOfCurrentOption,1)
+  }
+  setFilters(cpyFilters);
+  // set the filter object to the sessionStorage, so that when the page gets refreshed, it will remain in the in object
+  sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
+
+}
+
+// helper function to create query string for URL 
+function createSearchParamsHelper(filterParams){
+  
+  const queryParams = [];
+  // seperate the filterParams into key and value
+  for(const [key, value] of Object.entries(filterParams)){
+    // check if the value is an array and holds element or not
+    if(Array.isArray(value) && value.length > 0){
+      // if value array holds elements, it is joined to a single string separated by comma(,)
+      const paramValue = value.join(",");
+      // push key value pair into queryParams, here encodeURIComponent(paramValue) ensures that special characters in the string (like spaces, &, ?, etc.) are properly encoded for inclusion in a URL
+      // Example: "electronics,clothing" becomes "electronics%2Cclothing"
+      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`)
+    }
+  }
+  // returns the queryParams array as a single string seperated by and(&)
+  return queryParams.join("&")
+}
+
+// console.log(filters);
+
 
   // fetch all list of product
   useEffect(()=>{
-    dispatch(fetchFilteredProducts())
-  },[dispatch])
+    if(filters !== null && sort !== null)
+    dispatch(fetchFilteredProducts({filterParams:filters, sortParams:sort}))
+  },[dispatch, filters, sort])
+
+  // to set the default value for the filters of sort when the page load for the first time or when the page got refreshed.
+  useEffect(()=>{
+    setSort("price-lowtohigh");
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {})
+  },[])
+
+
+  // use of useSearchParams to change the url when filtering or sorting the products
+useEffect(()=>{
+if(filters && Object.keys(filters).length > 0){
+  const createQueryString = createSearchParamsHelper(filters);
+  // URLSearchParams create new URL and setSearchParams changes the URL 
+  setSearchParams(new URLSearchParams(createQueryString))
+}
+},[filters]);
+
+// console.log(filters);
+
+  
   return (
-    <div className='grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4 md:p-6 '>
+    <div className='grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6 '>
     {/* ProductFilter component holds the sidebar filter options */}
-      <ProductFilter />
+      <ProductFilter filters={filters} handleFilter={handleFilter} />
       <div className="bg-background w-full rounded-lg shadow-sm ">
       {/* this part contains the product count and sort options  */}
         <div className="p-4 border-b flex items-center justify-between">
@@ -38,10 +114,10 @@ const {productList} = useSelector(state=>state.userProductReducer)
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuRadioGroup>
+                <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                   {
                     sortOptions.map((sortItem)=>(
-                      <DropdownMenuRadioItem key={sortItem.id}>{sortItem.label}</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value={sortItem.id} key={sortItem.id}>{sortItem.label}</DropdownMenuRadioItem>
                     ))
                   }
                 </DropdownMenuRadioGroup>

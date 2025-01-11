@@ -54,3 +54,10 @@ then import the button component in your project where ever you need it.
 
 
 *** in this project we haven't created separate form for all required component, instead we have created a common formControl which can be reused where ever it is required
+
+
+*** use sessionStrorage to store the things so that when the page got refreshed, the data remains there.
+
+*** use of useSearchParams from react-router-dom, it helps to change the url
+
+
