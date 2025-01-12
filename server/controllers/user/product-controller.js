@@ -4,8 +4,8 @@ import handleError from "../../utils/error.js";
 class UserProductController{
     static async getFilteredProducts(req, res, next){
         try {
-            const {category, brand, sortBy} = req.query;
-
+            const {category=[], brand=[], sortBy} = req.query;
+            
             let filters = {};
 
             if(category.length){
@@ -51,7 +51,8 @@ class UserProductController{
     static async getProductDetail(req, res, next){
         try {
             const {id} = req.params;
-            const product = await Product.findById(id);
+            
+            const product = await Product.findById({_id:id});
             if(!product){
                 return next(handleError(404,"Product not found"));
             }
