@@ -58,7 +58,7 @@ class CartController {
             if(!userId) return next(handleError(404, "User id is mandatory"));
 
             const cart = await Cart.findOne({userId}).populate({
-                path : 'item.productId',
+                path : 'items.productId',
                 select : "image title price salePrice"
             });
 
@@ -116,6 +116,7 @@ class CartController {
             }
 
             const cart = await Cart.findOne({userId});
+            
 
             if(!cart) return next(handleError(404, "Cart is not found"));
 
