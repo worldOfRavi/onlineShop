@@ -18,12 +18,19 @@ import {
 } from "@/store/user/product-slice";
 import { useSearchParams } from "react-router-dom";
 import ProductDetailsDialog from "./product-details";
+import { addToCartItem, fetchCartItems } from "@/store/user/cart-slice";
+import { useToast } from "@/hooks/use-toast";
 
 const UserListing = () => {
   const dispatch = useDispatch();
   const { productList, productDetails } = useSelector(
     (state) => state.userProductReducer
   );
+  const {user} = useSelector(state => state.authReducer);
+  const {toast} = useToast();
+  
+  
+  
   // state to holds the filter options
   const [filters, setFilters] = useState({});
   // state to hold the sort option
@@ -86,6 +93,20 @@ const UserListing = () => {
   const handleProductDetails = (getProductId) => {
     dispatch(fetchProductDetail(getProductId));
   };
+
+  // function to handle addtocart item
+  function handleAddTocart(getProductId){
+  dispatch(addToCartItem({ userId: user?.id, productId : getProductId, quantity:1})).then((data)=>{
+    if(data?.payload?.success){
+      dispatch(fetchCartItems({userId : user?.id}));
+      toast({
+        title:"Item added to your cart"
+      })
+
+    }
+  })
+
+  }
 
   // fetch all list of product
   useEffect(() => {
@@ -164,6 +185,7 @@ const UserListing = () => {
                 handleProductDetails={handleProductDetails}
                 key={product.title}
                 product={product}
+                handleAddTocart={handleAddTocart}
               />
             ))}
         </div>

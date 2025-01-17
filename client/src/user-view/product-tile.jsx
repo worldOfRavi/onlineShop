@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { brandFilterMap, categoryFilterMap } from "@/config";
 import React from "react";
 
-const UserProductTile = ({ product, handleProductDetails }) => {
+const UserProductTile = ({ product, handleProductDetails, handleAddTocart }) => {
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div className="cursor-pointer" onClick={()=>handleProductDetails(product._id)}>
@@ -44,11 +44,11 @@ const UserProductTile = ({ product, handleProductDetails }) => {
               ) : null}
             </div>
           </CardContent>
-          <CardFooter>
-            <Button className="w-full">Add to cart</Button>
-          </CardFooter>
         </div>
       </div>
+      <CardFooter>
+            <Button onClick={()=>handleAddTocart(product?._id)} className="w-full">Add to cart</Button>
+          </CardFooter>
     </Card>
   );
 };

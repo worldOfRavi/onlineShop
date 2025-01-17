@@ -56,6 +56,7 @@ class CartController {
   static async fetchCartItem(req, res, next) {
     try {
       const { userId } = req.params;
+      
       if (!userId) return next(handleError(404, "User id is mandatory"));
 
       const cart = await Cart.findOne({ userId }).populate({
@@ -176,7 +177,7 @@ class CartController {
   // function to delete cart item
   static async deleteCartItem(req, res, next) {
     try {
-      const { userId, productId } = req.body;
+      const { userId, productId } = req.params;
 
       // if any of them does not present return wiith an error
       if (!userId || !productId) {
