@@ -1,217 +1,226 @@
-import Cart from "../../models/Cart";
-import Product from "../../models/Product";
-import handleError from "../../utils/error";
-
+import Cart from "../../models/Cart.js";
+import Product from "../../models/Product.js";
+import handleError from "../../utils/error.js";
 
 class CartController {
-    // function to add item to cart
-    static async addToCart(req, res, next){
-        try {
-            const {userId, productId, quantity} = req.body;
+  // function to add item to cart
+  static async addToCart(req, res, next) {
+    try {
+      const { userId, productId, quantity } = req.body;
 
-            // if any of them does not present return wiith an error
-            if(!userId || !productId || quantity <= 0){
-                return next(handleError(400, "Invalid data provided"));
-            }
+      // if any of them does not present return wiith an error
+      if (!userId || !productId || quantity <= 0) {
+        return next(handleError(400, "Invalid data provided"));
+      }
 
-            const product = await Product.findById(productId);
+      const product = await Product.findById(productId);
 
-            if(!product) return next(handleError(404, "Product not found"));
+      if (!product) return next(handleError(404, "Product not found"));
 
-            let cart = await Cart.findOne({userId});
-            
-            // if there is not cart for a user, then new cart will be created before adding any item to cart
-             if(!cart){
-                cart = new Cart({userId, items : []});
-             }
-            //  see if the item that a user want to add to the cart,    already present in the cart or not?
-            // for that find the index of the item in the cart, it does not present then the index will be -1
+      let cart = await Cart.findOne({ userId });
 
-            const findCurrentProductIndex = cart.items.findIndex(item=>item.productId.toString() === productId);
+      // if there is not cart for a user, then new cart will be created before adding any item to cart
+      if (!cart) {
+        cart = new Cart({ userId, items: [] });
+      }
+      //  see if the item that a user want to add to the cart,    already present in the cart or not?
+      // for that find the index of the item in the cart, it does not present then the index will be -1
 
-            if(findCurrentProductIndex === -1){
-                cart.items.push({productId, quantity});
-            }
-            else{
-                cart.items[findCurrentProductIndex].quantity += quantity;
-            }
+      // find the index of the item in items array
+      const findCurrentProductIndex = cart.items.findIndex(
+        (item) => item.productId.toString() === productId
+      );
 
-            await cart.save();
+      // if the index is -1 that is the item is not cart - push the item with the product id in the cart
+      if (findCurrentProductIndex === -1) {
+        cart.items.push({ productId, quantity });
+      }
+      // if item already present in the cart, then simply increment the quantity
+      else {
+        cart.items[findCurrentProductIndex].quantity += quantity;
+      }
 
-            res.status(200).json({
-                success:true,
-                data:cart
-            })
-            
-            
-        } catch (error) {
-            console.log("Error while adding to product to cart ", error.message);
-            next(error)
-        }
+      await cart.save();
+
+      res.status(200).json({
+        success: true,
+        data: cart,
+      });
+    } catch (error) {
+      console.log("Error while adding to product to cart ", error.message);
+      next(error);
     }
+  }
 
-    // function to fetch cart items
-    static async fetchCartItem(req, res, next){
-        try {
+  // function to fetch cart items
+  static async fetchCartItem(req, res, next) {
+    try {
+      const { userId } = req.params;
+      if (!userId) return next(handleError(404, "User id is mandatory"));
 
-            const {userId} = req.params;
-            if(!userId) return next(handleError(404, "User id is mandatory"));
+      const cart = await Cart.findOne({ userId }).populate({
+        path: "items.productId", // Specifies the nested path to populate (items -> productId)
+        select: "image title price salePrice", //Includes only these fields from the `Product` collection
+      });
 
-            const cart = await Cart.findOne({userId}).populate({
-                path : 'items.productId',
-                select : "image title price salePrice"
-            });
+      /*
+            after populate, cart would look like 
+            {
+  items: [
+    { 
+      productId: {
+        image: "url_to_image",
+        title: "Product Name",
+        price: 100,
+        salePrice: 80
+      }, 
+      quantity: 2 
+    }
+  ]
+}
 
-            if(!cart) return next(handleError(404, "Cart is not found"));
+            */
 
-            // very important
-            /*
+      if (!cart) return next(handleError(404, "Cart is not found"));
+
+      // very important
+      /*
             we need to validate the case, if an item present in the cart but for some reason, if admin remove that item from the database
             then it should not present in the cart as well
-            */ 
+            */
 
-            const validateItems = cart.items.filter(productItem => productItem.productId);
+      const validateItems = cart.items.filter(
+        (productItem) => productItem.productId
+      );
 
-            if(validateItems.length < cart.items.length){
-                cart.items = validateItems;
-                await cart.save();
-            }
+      if (validateItems.length < cart.items.length) {
+        cart.items = validateItems;
+        await cart.save();
+      }
 
-            const populateCartItem = validateItems.map(item =>({
-                productId : item.productId._id,
-                image : item.productId.image,
-                title : item.productId.title,
-                price : item.productId.price,
-                salePrice : item.productId.salePrice,
-                quantity : item.quantity,
-                
-            }))
+    //   dont be confuse, here item.productId contains all the product information related with the specified productId.
+      const populateCartItem = validateItems.map((item) => ({
+        productId: item.productId._id,
+        image: item.productId.image,
+        title: item.productId.title,
+        price: item.productId.price,
+        salePrice: item.productId.salePrice,
+        quantity: item.quantity,
+      }));
 
-            res.status(200).json({
-                success:true,
-                data:{
-                    ...cart._doc,
-                    items:populateCartItem
-                }
-            })
-            
-
-
-
-            
-        } catch (error) {
-            console.log("Error while fetching item from cart ", error.message);
-            next(error)
-        }
+      res.status(200).json({
+        success: true,
+        data: {
+          ...cart._doc,
+          items: populateCartItem,
+        },
+      });
+    } catch (error) {
+      console.log("Error while fetching item from cart ", error.message);
+      next(error);
     }
+  }
 
-    // function to update cart item 
-    static async updateCartItem(req, res, next){
-        try {
-            const {userId, productId, quantity} = req.body;
+  // function to update cart item
+  static async updateCartItem(req, res, next) {
+    try {
+      const { userId, productId, quantity } = req.body;
 
-            // if any of them does not present return wiith an error
-            if(!userId || !productId || quantity <= 0){
-                return next(handleError(400, "Invalid data provided"));
-            }
+      // if any of them does not present return wiith an error
+      if (!userId || !productId || quantity <= 0) {
+        return next(handleError(400, "Invalid data provided"));
+      }
 
-            const cart = await Cart.findOne({userId});
-            
+      const cart = await Cart.findOne({ userId });
 
-            if(!cart) return next(handleError(404, "Cart is not found"));
+      if (!cart) return next(handleError(404, "Cart is not found"));
 
-            const findCurrentProductIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+      const findCurrentProductIndex = cart.items.findIndex(
+        (item) => item.productId.toString() === productId
+      );
 
-            if(findCurrentProductIndex === -1) return next(handleError(404, "cart item not present"));
+      if (findCurrentProductIndex === -1)
+        return next(handleError(404, "cart item not present"));
 
-            cart.items[findCurrentProductIndex].quantity = quantity;
+      cart.items[findCurrentProductIndex].quantity = quantity;
 
-            await cart.save();
+      await cart.save();
 
-            await cart.populate({
-                path : "items.productId",
-                select : "image title price salePrice"
-            });
+      await cart.populate({
+        path: "items.productId",
+        select: "image title price salePrice",
+      });
 
-            const populateCartItem = cart.items.map(item =>({
-                productId :item.productId ? item.productId._id : null,
-                image : item.productId ? item.productId.image : null,
-                title : item.productId?  item.productId.title : "Product not found",
-                price : item.productId ? item.productId.price : null,
-                salePrice : item.productId ? item.productId.salePrice : null,
-                quantity : item.quantity,
-                
-            }))
+      const populateCartItem = cart.items.map((item) => ({
+        productId: item.productId ? item.productId._id : null,
+        image: item.productId ? item.productId.image : null,
+        title: item.productId ? item.productId.title : "Product not found",
+        price: item.productId ? item.productId.price : null,
+        salePrice: item.productId ? item.productId.salePrice : null,
+        quantity: item.quantity,
+      }));
 
-            res.status(200).json({
-                success:true,
-                data:{
-                    ...cart._doc,
-                    items:populateCartItem
-                }
-            })
-
-        } catch (error) {
-            console.log("Error while updating item of cart ", error.message);
-            next(error)
-        }
-
-        
+      res.status(200).json({
+        success: true,
+        data: {
+          ...cart._doc,
+          items: populateCartItem,
+        },
+      });
+    } catch (error) {
+      console.log("Error while updating item of cart ", error.message);
+      next(error);
     }
+  }
 
-    // function to delete cart item
-    static async deleteCartItem(req, res, next){
-        try {
-            const {userId, productId} = req.body;
+  // function to delete cart item
+  static async deleteCartItem(req, res, next) {
+    try {
+      const { userId, productId } = req.body;
 
-            // if any of them does not present return wiith an error
-            if(!userId || !productId){
-                return next(handleError(400, "Invalid data provided"));
-            }
+      // if any of them does not present return wiith an error
+      if (!userId || !productId) {
+        return next(handleError(400, "Invalid data provided"));
+      }
 
-            const cart = await Cart.findOne({userId}).populate({
-                path : "items.productId",
-                select : "image title price salePrice"
-            })
+      const cart = await Cart.findOne({ userId }).populate({
+        path: "items.productId",
+        select: "image title price salePrice",
+      });
 
-            if(!cart) return next(handleError(404, "Cart is not found"));
-            
-            cart.items = cart.items.map(item => item.productId.toString() !== productId);
-            await cart.save();
+      if (!cart) return next(handleError(404, "Cart is not found"));
 
-            // await cart.populate({
-            //     path : "items.productId",
-            //     select : "image title price salePrice"
-            // });
+      cart.items = cart.items.map(
+        (item) => item.productId.toString() !== productId
+      );
+      await cart.save();
 
-            const populateCartItem = cart.items.map(item =>({
-                productId :item.productId ? item.productId._id : null,
-                image : item.productId ? item.productId.image : null,
-                title : item.productId?  item.productId.title : "Product not found",
-                price : item.productId ? item.productId.price : null,
-                salePrice : item.productId ? item.productId.salePrice : null,
-                quantity : item.quantity,
-                
-            }))
+      // await cart.populate({
+      //     path : "items.productId",
+      //     select : "image title price salePrice"
+      // });
 
-            res.status(200).json({
-                success:true,
-                data:{
-                    ...cart._doc,
-                    items:populateCartItem
-                }
-            })
+      const populateCartItem = cart.items.map((item) => ({
+        productId: item.productId ? item.productId._id : null,
+        image: item.productId ? item.productId.image : null,
+        title: item.productId ? item.productId.title : "Product not found",
+        price: item.productId ? item.productId.price : null,
+        salePrice: item.productId ? item.productId.salePrice : null,
+        quantity: item.quantity,
+      }));
 
-
-
-
-
-
-        } catch (error) {
-            console.log("Error while deleting cart item ", error.message);
-            next(error)
-        }
+      res.status(200).json({
+        success: true,
+        data: {
+          ...cart._doc,
+          items: populateCartItem,
+        },
+      });
+    } catch (error) {
+      console.log("Error while deleting cart item ", error.message);
+      next(error);
     }
+  }
 }
 
 export default CartController;
