@@ -40,16 +40,23 @@ function MenuItems() {
 function HeaderRightContent() {
   const { user } = useSelector((state) => state.authReducer);
   const [openCartSheet, setOpenCartSheet] = useState(false);
-  const {cartItems} = useSelector(state => state.cartSlice);
+  const { cartItems } = useSelector((state) => state.cartSlice);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  useEffect(()=>{
-    dispatch(fetchCartItems({userId:user?.id}))
-  },[dispatch])
+  useEffect(() => {
+    
+    if (user && user.id) {
+      dispatch(fetchCartItems(user?.id));
+    }
+  }, [user, dispatch]);
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Sheet open={openCartSheet} onOpenChange={()=>setOpenCartSheet(false)}>
-        <Button variant="outline" size="icon" onClick={()=>setOpenCartSheet(true)}>
+      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setOpenCartSheet(true)}
+        >
           <ShoppingCart className="w-6 h-6" />
           <span className="sr-only">User cart</span>
         </Button>
@@ -84,8 +91,6 @@ function HeaderRightContent() {
 }
 
 const UserHeader = () => {
- 
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">

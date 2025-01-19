@@ -69,7 +69,7 @@ class AuthController {
       );
 
       // extract user info excluding the password
-      const { password: pas, ...rest } = user._doc;
+      // const { password: pas, ...rest } = user._doc;
 
       // sending cookie with response
       res
@@ -79,7 +79,10 @@ class AuthController {
         .json({
           success: true,
           message: "Logged in successfully",
-          user: rest,
+          user: {id: user._id,
+          role: user.role,
+          email: user.email,
+          userName:user.userName},
         });
     } catch (error) {
       console.log(error);

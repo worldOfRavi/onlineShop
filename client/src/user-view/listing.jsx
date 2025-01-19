@@ -26,16 +26,14 @@ const UserListing = () => {
   const { productList, productDetails } = useSelector(
     (state) => state.userProductReducer
   );
-  const {user} = useSelector(state => state.authReducer);
-  const {toast} = useToast();
-  
-  
-  
+  const { user } = useSelector((state) => state.authReducer);
+  const { toast } = useToast();
+
   // state to holds the filter options
   const [filters, setFilters] = useState({});
   // state to hold the sort option
   const [sort, setSort] = useState(null);
-// useSearchPrams hook to manage the URL
+  // useSearchPrams hook to manage the URL
   const [searchParams, setSearchParams] = useSearchParams();
 
   // state to manage the product details dialog
@@ -95,17 +93,26 @@ const UserListing = () => {
   };
 
   // function to handle addtocart item
-  function handleAddTocart(getProductId){
-  dispatch(addToCartItem({ userId: user?.id, productId : getProductId, quantity:1})).then((data)=>{
-    if(data?.payload?.success){
-      dispatch(fetchCartItems({userId : user?.id}));
-      toast({
-        title:"Item added to your cart"
-      })
+  function handleAddTocart(getProductId) {
+    // console.log(getProductId);
+    console.log(user, " user");
 
-    }
-  })
-
+    // if(user && user.id){
+      dispatch(
+      addToCartItem({ userId: user?.id, productId: getProductId, quantity: 1 })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Item added to your cart",
+        });
+      }
+    });
+    // }
+    // else{
+    //   console.log("Muji user kata xas?");
+      
+    // }
   }
 
   // fetch all list of product
@@ -132,11 +139,9 @@ const UserListing = () => {
   }, [filters]);
 
   // when ever the productDetails changes, openDetailsDialog will be true and the productDetailsDialog would appear
-  useEffect(()=>{
-    if(productDetails !==null) setOpenDetailsDialog(true)
-  },[productDetails])
-
-  
+  useEffect(() => {
+    if (productDetails !== null) setOpenDetailsDialog(true);
+  }, [productDetails]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6 ">
@@ -190,7 +195,11 @@ const UserListing = () => {
             ))}
         </div>
       </div>
-      <ProductDetailsDialog open={openDetailsDialog} setOpen={setOpenDetailsDialog} productDetails={productDetails} />
+      <ProductDetailsDialog
+        open={openDetailsDialog}
+        setOpen={setOpenDetailsDialog}
+        productDetails={productDetails}
+      />
     </div>
   );
 };

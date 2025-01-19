@@ -56,7 +56,7 @@ class CartController {
   static async fetchCartItem(req, res, next) {
     try {
       const { userId } = req.params;
-      
+
       if (!userId) return next(handleError(404, "User id is mandatory"));
 
       const cart = await Cart.findOne({ userId }).populate({
@@ -84,6 +84,8 @@ class CartController {
 
       if (!cart) return next(handleError(404, "Cart is not found"));
 
+      // console.log(cart.items, " fetch products");
+
       // very important
       /*
             we need to validate the case, if an item present in the cart but for some reason, if admin remove that item from the database
@@ -99,7 +101,7 @@ class CartController {
         await cart.save();
       }
 
-    //   dont be confuse, here item.productId contains all the product information related with the specified productId.
+      //   dont be confuse, here item.productId contains all the product information related with the specified productId.
       const populateCartItem = validateItems.map((item) => ({
         productId: item.productId._id,
         image: item.productId.image,
@@ -178,6 +180,7 @@ class CartController {
   static async deleteCartItem(req, res, next) {
     try {
       const { userId, productId } = req.params;
+      
 
       // if any of them does not present return wiith an error
       if (!userId || !productId) {
@@ -189,17 +192,18 @@ class CartController {
         select: "image title price salePrice",
       });
 
+
       if (!cart) return next(handleError(404, "Cart is not found"));
 
-      cart.items = cart.items.map(
-        (item) => item.productId.toString() !== productId
-      );
+      // return the items that are not matched with the product id got from the front end.
+      // console.log(cart.items[0].productId._id, "fetch items");
+
+      // cart.items = cart.items.map(item => item.productId._id.toString() !== productId);
+      cart.items = cart.items.filter(item => item.productId._id.toString() !== productId);
+
+      
       await cart.save();
 
-      // await cart.populate({
-      //     path : "items.productId",
-      //     select : "image title price salePrice"
-      // });
 
       const populateCartItem = cart.items.map((item) => ({
         productId: item.productId ? item.productId._id : null,

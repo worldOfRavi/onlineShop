@@ -1,8 +1,22 @@
 import { Button } from '@/components/ui/button'
-import { Minus, Plus } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast';
+import { deleteCartItem } from '@/store/user/cart-slice';
+import { Minus, Plus, Trash } from 'lucide-react'
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 
 const UserCartItemsContent = ({cartItem}) => {
+    const { user } = useSelector((state) => state.authReducer);
+    const {toast} = useToast(); 
+    
+    const dispatch = useDispatch();
+    function handleDeleteItem(getProductId){
+        dispatch(deleteCartItem({userId:user?.id, productId:getProductId}))
+        toast({
+            title:"Item deleted form the cart"
+        })
+    }
+    
   return (
     <div className='flex items-center space-x-4'>
         <img src={cartItem?.image} alt={cartItem?.title} 
@@ -25,8 +39,8 @@ const UserCartItemsContent = ({cartItem}) => {
         <div className="flex flex-col items-end">
             <p className="font-semibold">
                ${((cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price) * cartItem?.quantity).toFixed(2)}
-                
             </p>
+            <Trash onClick={()=>handleDeleteItem(cartItem?.productId)} className='cursor-pointer mt-1' size={17} />
         </div>
     </div>  
   )
