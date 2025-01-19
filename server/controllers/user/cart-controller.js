@@ -139,7 +139,7 @@ class CartController {
       if (!cart) return next(handleError(404, "Cart is not found"));
 
       const findCurrentProductIndex = cart.items.findIndex(
-        (item) => item.productId.toString() === productId
+        (item) => item.productId._id.toString() === productId
       );
 
       if (findCurrentProductIndex === -1)
