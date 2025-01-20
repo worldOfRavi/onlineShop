@@ -94,10 +94,6 @@ const UserListing = () => {
 
   // function to handle addtocart item
   function handleAddTocart(getProductId) {
-    // console.log(getProductId);
-    console.log(user, " user");
-
-    // if(user && user.id){
       dispatch(
       addToCartItem({ userId: user?.id, productId: getProductId, quantity: 1 })
     ).then((data) => {
@@ -108,11 +104,6 @@ const UserListing = () => {
         });
       }
     });
-    // }
-    // else{
-    //   console.log("Muji user kata xas?");
-      
-    // }
   }
 
   // fetch all list of product

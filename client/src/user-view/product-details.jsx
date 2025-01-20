@@ -3,12 +3,39 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { addToCartItem, fetchCartItems } from "@/store/user/cart-slice";
+import { setOpenProductDetails } from "@/store/user/product-slice";
 import { StarIcon } from "lucide-react";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.authReducer);
+  const { toast } = useToast();
+    // function to handle addtocart item
+  function handleAddTocart(getProductId) {
+      dispatch(
+      addToCartItem({ userId: user?.id, productId: getProductId, quantity: 1 })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Item added to your cart",
+        });
+      }
+    });
+  }
+
+  // here handleProductDetailsDialog funtion set the setOpen to false which closes the dialog, but the productDetails will remain same as the last product that has been clicked, so when we come back to listing page from some other page, the productDetails would appear by its on. so to make the productDetails to null, call setOpenProductDetails function which is defined in the userProduct slice.
+  function handleProductDetailsDialog(){
+    setOpen(false);
+    dispatch(setOpenProductDetails())
+  }
+   
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleProductDetailsDialog}>
       <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw] ">
         <div className="relative overflow-hidden rounded-lg">
           <img
@@ -51,7 +78,7 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
             <span className="text-muted-foreground">(4.5)</span>
           </div>
           <div className="mt-5 mb-4">
-            <Button className="w-full">Add to Cart</Button>
+            <Button onClick={()=>handleAddTocart(productDetails?._id)}  className="w-full">Add to Cart</Button>
           </div>
           <Separator />
           <div className="max-h-[300px] overflow-auto">
