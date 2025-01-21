@@ -16,7 +16,7 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { authLogout } from "@/store/auth-slice";
-import UserCartWrapper from "@/user-view/cart-wrapper";
+import UserCartWrapper from "@/pages/user-view/cart-wrapper";
 import { fetchCartItems } from "@/store/user/cart-slice";
 
 // function to create menu items
