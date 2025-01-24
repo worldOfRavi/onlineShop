@@ -18,19 +18,37 @@ import { AvatarImage } from "@radix-ui/react-avatar";
 import { authLogout } from "@/store/auth-slice";
 import UserCartWrapper from "@/pages/user-view/cart-wrapper";
 import { fetchCartItems } from "@/store/user/cart-slice";
+import { Label } from "../ui/label";
 
 // function to create menu items
 function MenuItems() {
+  const navigate = useNavigate();
+  // const [getCurrentMenuItem, setGetCurrentMenuItem] = useState(null);
+
+  function handleNavigation(getCurrentMenuItem) {
+    sessionStorage.removeItem("filters");
+    const currentFilters =
+      getCurrentMenuItem.id !== "home"
+        ? { category: [getCurrentMenuItem.id] }
+        : null;
+    sessionStorage.setItem("filters", JSON.stringify(currentFilters));
+    navigate(getCurrentMenuItem.path);
+  }
+  // useEffect(()=>{
+  //   handleNavigation(getCurrentMenuItem);
+  // },[getCurrentMenuItem])
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
       {shoppingViewMenuItems.map((menuItem) => (
-        <Link
-          className="text-sm font-medium"
-          to={menuItem.path}
+        <Label
+          onClick={() => 
+            handleNavigation(menuItem)
+          }
+          className="text-sm font-medium cursor-pointer"
           key={menuItem.id}
         >
           {menuItem.label}
-        </Link>
+        </Label>
       ))}
     </nav>
   );
@@ -44,7 +62,6 @@ function HeaderRightContent() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    
     if (user && user.id) {
       dispatch(fetchCartItems(user?.id));
     }
