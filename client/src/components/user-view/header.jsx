@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { shoppingViewMenuItems } from "@/config";
+import appLogo from "../../assets/logo.jpg";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -112,7 +113,8 @@ const UserHeader = () => {
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/user/home" className="flex items-center gap-2">
-          <HousePlug className="w-6 h-6" />
+        <img src={appLogo} alt="logo" className="w-[65px] h-[62px] rounded-full" />
+          {/* <HousePlug className="w-6 h-6" /> */}
           <span className="font-bold">Ecommerce</span>
         </Link>
         {/* this sheet content will be visisble only on small devices */}
