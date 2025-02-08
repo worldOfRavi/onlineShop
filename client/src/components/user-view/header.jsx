@@ -1,4 +1,4 @@
-import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import { LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
@@ -15,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { AvatarImage } from "@radix-ui/react-avatar";
 import { authLogout } from "@/store/auth-slice";
 import UserCartWrapper from "@/pages/user-view/cart-wrapper";
 import { fetchCartItems } from "@/store/user/cart-slice";
@@ -79,7 +78,7 @@ function HeaderRightContent() {
           <span className="sr-only">User cart</span>
         </Button>
         {/* UsercartWrapper component contains all the cart item */}
-        <UserCartWrapper cartItems={cartItems} />
+        <UserCartWrapper setOpenCartSheet={setOpenCartSheet} cartItems={cartItems} />
       </Sheet>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -114,7 +113,6 @@ const UserHeader = () => {
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/user/home" className="flex items-center gap-2">
         <img src={appLogo} alt="logo" className="w-[65px] h-[62px] rounded-full" />
-          {/* <HousePlug className="w-6 h-6" /> */}
           <span className="font-bold">Ecommerce</span>
         </Link>
         {/* this sheet content will be visisble only on small devices */}
