@@ -1,8 +1,8 @@
 import React from "react";
 import accountImage from "../../assets/account.jpg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Orders from "../../components/user-view/orders";
 import Address from "../../components/user-view/address";
+import UserOrders from "../../components/user-view/orders";
 
 const UserAccount = () => {
   return (
@@ -22,9 +22,11 @@ const UserAccount = () => {
             <TabsTrigger value="address">Address</TabsTrigger>
           </TabsList>
           <TabsContent value="orders">
-            <Orders />
+          {/* user orders */}
+            <UserOrders />
           </TabsContent>
           <TabsContent value="address">
+          {/* user address */}
             <Address />
           </TabsContent>
         </Tabs>

@@ -5,7 +5,6 @@ import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
 import Adminlayout from "./components/admin-view/layout";
 import AdminDashboard from "./pages/admin-view/dashboard";
-import AdminOrders from "./pages/admin-view/orders";
 import AdminProducts from "./pages/admin-view/products";
 import AdminFeatures from "./pages/admin-view/features";
 import Userlayout from "./components/user-view/layout";
@@ -19,6 +18,7 @@ import CheckAuth from "./components/common/check-auth";
 import { useDispatch, useSelector } from "react-redux";
 import { authCheck } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton"
+import AdminOrdersView from "./pages/admin-view/orders";
 
 const App = () => {
 
@@ -51,7 +51,7 @@ const App = () => {
         </Route>
         <Route path="/admin" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}><Adminlayout /></CheckAuth>}>
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders" element={<AdminOrdersView />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="features" element={<AdminFeatures />} />
         </Route>

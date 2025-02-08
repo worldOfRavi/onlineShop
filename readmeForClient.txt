@@ -61,3 +61,13 @@ then import the button component in your project where ever you need it.
 *** use of useSearchParams from react-router-dom, it helps to change the url
 
 
+=================================
+
+For order and payment options
+
+-- 1. Need to create a paypal account
+--- after creating paypal account - in google search for paypal develper dashboard- for that no need to create any further account
+---then click on app & credentials and create App, give any resonable name to it.
+--- the app that you create will have its own Client ID, Secret key 1, email and password.
+--- but if you use the same email and password to for login then you wont be able to make any order for that, you can create any other person email id for testing purpose. for that follow the following steps
+-- click on Testing tools button and choose sandbox accounts and then create another account and use that account for testing purpose.
