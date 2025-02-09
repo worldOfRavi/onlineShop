@@ -3,6 +3,7 @@ import axios from "axios";
 
 const initialState = {
   isLoading: false,
+  cartId:null,
   cartItems: [],
 };
 
@@ -126,11 +127,13 @@ const CartSlice = createSlice({
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.isLoading = false;
         state.cartItems = action.payload.data.items;
+        state.cartId = action.payload.data._id;
       })
       .addCase(fetchCartItems.rejected, (state) => {
         state.isLoading = false;
         state.cartItems = []
-      }).addCase(updateCartItems.pending, (stata) => {
+      })
+      .addCase(updateCartItems.pending, (stata) => {
         stata.isLoading = true;
       })
       .addCase(updateCartItems.fulfilled, (state, action) => {

@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 
 const orderSchema  = new Schema({
     userId : String,
+    cartId : String,
     cartItems : [
         {
             productId : String,

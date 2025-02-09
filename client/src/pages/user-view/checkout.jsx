@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import img from "../../assets/account.jpg";
 import Address from "@/components/user-view/address";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import UserCartItemsContent from "./cart-items-contens";
 import { Button } from "@/components/ui/button";
+import { createOrderPayment } from "@/store/user/order-slice";
 const UserCheckout = () => {
   // cart items
-  const { cartItems } = useSelector((state) => state.cartSlice);
-  // console.log(cartItems);
+  const { cartItems,cartId } = useSelector((state) => state.cartSlice);
+  console.log(cartId);
+  
+
+  const { user } = useSelector((state) => state.authReducer);
+  const { approvedURL } = useSelector((state) => state.orderSlice);
+  // console.log(approvedURL, "url");
+  
+
+  const [addressInfo, setAddressInfo] = useState(null);
+  const dispatch = useDispatch();
+  const [isPaymentStart, setIsPaymentStart] = useState(false);
+
   // total Cart items price
   const totalCartItemAmount =
     cartItems && cartItems.length > 0
@@ -22,6 +34,50 @@ const UserCheckout = () => {
         )
       : 0;
 
+  function handleInitialPaypalPayment() {
+    const orderData = {
+      userId: user?.id,
+      cartId,
+      cartItems: cartItems.map((singleCartItem) => ({
+        productId: singleCartItem.productId,
+        title: singleCartItem.title,
+        image: singleCartItem.image,
+        price:
+          singleCartItem.salePrice > 0
+            ? singleCartItem.salePrice
+            : singleCartItem.price,
+        quantity: singleCartItem.quantity,
+      })),
+      addressInfo: {
+        addressId: addressInfo?._id,
+        address: addressInfo?.address,
+        city: addressInfo?.city,
+        pincode: addressInfo?.pincode,
+        phone: addressInfo?.phone,
+        notes: addressInfo?.notes,
+      },
+      orderStatu: "pending",
+      paymentMethod: "paypal",
+      paymentStatus: "pending",
+      totalAmount: totalCartItemAmount,
+      orderDate: new Date(),
+      orderUpdateDate: new Date(),
+      paymentId: "",
+      payerId: "",
+    };
+
+    dispatch(createOrderPayment(orderData)).then((data) => {
+      console.log(data);
+      if(data?.payload?.success){
+        setIsPaymentStart(true)
+      }else setIsPaymentStart(false);
+    })
+  }
+  // if everything goes well and able to get the approvedURL then, it will be redirected to the paypal.
+  if(approvedURL){
+      window.location.href = approvedURL;
+    }
+
   return (
     <div className="flex flex-col">
       <div className="relative h-[300px] overflow-hidden">
@@ -32,7 +88,7 @@ const UserCheckout = () => {
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5 p-5">
-        <Address />
+        <Address setAddressInfo={setAddressInfo} />
         <div className="flex flex-col gap-5 p-5">
           {cartItems && cartItems.length > 0 ? (
             cartItems.map((item) => (
@@ -49,7 +105,9 @@ const UserCheckout = () => {
             </div>
           </div>
           <div className="mt-3">
-            <Button className="w-full">Checkout with Paypal</Button>
+            <Button onClick={handleInitialPaypalPayment} className="w-full">
+              Checkout with Paypal
+            </Button>
           </div>
         </div>
       </div>

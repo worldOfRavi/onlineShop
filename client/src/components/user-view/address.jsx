@@ -16,7 +16,7 @@ const initialFomData = {
   notes: "",
 };
 
-const Address = () => {
+const Address = ({setAddressInfo}) => {
   const [formData, setFormData] = useState(initialFomData);
   const { user } = useSelector((state) => state.authReducer);
   const { addressList } = useSelector((state) => state.addressSlice);
@@ -120,6 +120,7 @@ setFormData({
                 addressInfo={currentAddress}
                 deleteAddress={handleDeleteAddress}
                 editAddress={editAddress}
+                setAddressInfo = {setAddressInfo}
               />
             ))
           : null}

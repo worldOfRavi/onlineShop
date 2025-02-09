@@ -44,7 +44,7 @@ class AuthController {
   }
 
   // function to handle login functionality
-  static async authLogin(req, res) {
+  static async authLogin(req, res, next) {
     const { email, password } = req.body;
 
     try {

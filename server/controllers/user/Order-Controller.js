@@ -1,4 +1,5 @@
 import paypal from "../../helpers/Paypal.js";
+import Cart from "../../models/Cart.js";
 import Order from "../../models/Order.js";
 import handleError from "../../utils/error.js";
 
@@ -7,6 +8,7 @@ class OrderController {
     try {
       const {
         userId,
+        cartId,
         cartItems,
         addressInfo,
         orderStatus,
@@ -26,7 +28,7 @@ class OrderController {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: "http://localhost:5173/user/paypal-return",
+          return_url: "http://localhost:5173/user/paypal-return", //when the payment is initiated, then our app exit and redirected to approvalLink and come back to paypal-return page 
           cancel_url: "http://localhost:5173/user/paypal-cancel",
         },
         transactions: [
@@ -70,6 +72,7 @@ class OrderController {
           }
           const newlyCreatedOrder = new Order({
             userId,
+            cartId,
             cartItems,
             addressInfo,
             orderStatus,
@@ -99,7 +102,29 @@ class OrderController {
 
   static async capturePayment(req, res, next) {
     try {
-      const {} = req.body;
+      const {paymentId, payerId, orderId} = req.body;
+      let order = await Order.findById(orderId);
+      if(!order) return handleError(404, "Order cannot be found");
+
+      // after getting the order update the remaining attributes then save it.
+      order.paymentStatus = "paid";
+      order.orderStatus = "confirmed";
+      order.paymentId = paymentId;
+      order.payerId = payerId;
+
+      await order.save();
+      
+      // after the order is place, we have to delete the items from the cart. for that get the cartId from the order and delete it from the cart Model
+      const getCartId = order.cartId;
+
+      await Cart.findByIdAndDelete(getCartId)
+
+      res.status(200).json({
+        success:true,
+        message:"Order confirmed",
+        data : order
+      });
+
     } catch (error) {
       console.log("Error while creating new order ", error.message);
       next(error);
