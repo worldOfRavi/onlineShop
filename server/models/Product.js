@@ -1,11 +1,3 @@
-// image: null,
-//   title: "",
-//   description: "",
-//   category: "",
-//   brand: "",
-//   price: "",
-//   salePrice: "",
-//   totalStock: ""
 
 import { Schema, model} from 'mongoose';
 
