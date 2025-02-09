@@ -12,21 +12,21 @@ const orderSchema  = new Schema({
         }
     ],
     addressInfo : {
-        addressId : string,
-        address : string,
-        city : string,
-        pincode : string,
-        phone : string,
-        notes : string
+        addressId : String,
+        address : String,
+        city : String,
+        pincode : String,
+        phone : String,
+        notes : String
     },
-    orderStatus : string,
-    paymentMethod : string,
-    paymentStatus : string,
+    orderStatus : String,
+    paymentMethod : String,
+    paymentStatus : String,
     totalAmount : Number,
     orderDate : Date,
     orderUpdateDate : Date,
-    paymentId : string,
-    payerId : string
+    paymentId : String,
+    payerId : String
 });
 
 const Order = model("Order", orderSchema);
