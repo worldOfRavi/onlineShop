@@ -28,7 +28,7 @@ class OrderController {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: "http://localhost:5173/user/paypal-return", //when the payment is initiated, then our app exit and redirected to approvalLink and come back to paypal-return page 
+          return_url: "http://localhost:5173/user/paypal-return", //when the payment is initiated, then our app exit and redirected to approvalLink and come back to paypal-return page
           cancel_url: "http://localhost:5173/user/paypal-cancel",
         },
         transactions: [
@@ -86,10 +86,10 @@ class OrderController {
           });
 
           await newlyCreatedOrder.save();
-          
+
           res.status(201).json({
             success: true,
-            approvedURL : approvalLink.href,
+            approvedURL: approvalLink.href,
             orderId: newlyCreatedOrder._id,
           });
         }
@@ -102,9 +102,9 @@ class OrderController {
 
   static async capturePayment(req, res, next) {
     try {
-      const {paymentId, payerId, orderId} = req.body;
+      const { paymentId, payerId, orderId } = req.body;
       let order = await Order.findById(orderId);
-      if(!order) return handleError(404, "Order cannot be found");
+      if (!order) return handleError(404, "Order cannot be found");
 
       // after getting the order update the remaining attributes then save it.
       order.paymentStatus = "paid";
@@ -113,20 +113,51 @@ class OrderController {
       order.payerId = payerId;
 
       await order.save();
-      
+
       // after the order is place, we have to delete the items from the cart. for that get the cartId from the order and delete it from the cart Model
       const getCartId = order.cartId;
 
-      await Cart.findByIdAndDelete(getCartId)
+      await Cart.findByIdAndDelete(getCartId);
 
       res.status(200).json({
-        success:true,
-        message:"Order confirmed",
-        data : order
+        success: true,
+        message: "Order confirmed",
+        data: order,
       });
-
     } catch (error) {
       console.log("Error while creating new order ", error.message);
+      next(error);
+    }
+  }
+
+  static async getAllOrderByUser(req, res, next) {
+    try {
+      const { userId } = req.params;
+      const orders = await Order.find({ userId });
+      if (!orders.length) next(handleError(404, "No order found"));
+
+      res.status(200).json({
+        success: true,
+        data: orders,
+      });
+    } catch (error) {
+      console.log("Error while fetching orders ", error.message);
+      next(error);
+    }
+  }
+
+  static async getOrderDetails(req, res, next) {
+    try {
+      const { id } = req.params;
+      const order = await Order.findById(id);
+      if (!order) next(handleError(404, "No order found"));
+
+      res.status(200).json({
+        success: true,
+        data: order,
+      });
+    } catch (error) {
+      console.log("Error while fetching order details ", error.message);
       next(error);
     }
   }

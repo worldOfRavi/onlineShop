@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { DialogContent } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
-import CommonForm from "../common/form";
+import { useSelector } from "react-redux";
+import { Badge } from "../ui/badge";
 
-const UserOrderDetailsView = () => {
+const UserOrderDetailsView = ({order}) => {
    
+  const {user} = useSelector(state=>state.authReducer);
+  
   return (
     <DialogContent className="sm:max-w-[600px]">
       {/* order details */}
@@ -13,32 +16,53 @@ const UserOrderDetailsView = () => {
         <div className="grid gap-2">
           <div className="flex items-center justify-between mt-6">
             <p className="font-medium">Order ID</p>
-            <Label>123456</Label>
+            <Label>{order?._id}</Label>
           </div>
 
           <div className="flex items-center justify-between mt-2">
             <p className="font-medium">Order Date</p>
-            <Label>08/02/2025</Label>
+            <Label>{order?.orderDate.split("T")[0]}</Label>
           </div>
           <div className="flex items-center justify-between mt-2">
             <p className="font-medium">Order Price</p>
-            <Label>$500</Label>
+            <Label>${order?.totalAmount}</Label>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <p className="font-medium">Payment Method</p>
+            <Label>{order?.paymentMethod}</Label>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <p className="font-medium">Payment Status</p>
+            <Label>{order?.paymentStatus}</Label>
           </div>
           <div className="flex items-center justify-between mt-2">
             <p className="font-medium">Order Status</p>
-            <Label>In Process</Label>
+            <Badge
+                      className={`py-1 px-3 ${
+                        order?.orderStatus === "confirmed"
+                          ? "bg-green-600"
+                          : "bg-black"
+                      }`}
+                    >
+                      {order?.orderStatus}
+                    </Badge>
           </div>
         </div>
         <Separator />
         {/* for ordered products list */}
         <div className="grid gap-4">
           <div className="grid gap-2">
-            <div className="font-medium">Order Derails</div>
+            <div className="font-medium">Order Details</div>
             <ul className="grid gap-3">
-              <li className="flex items-center justify-between">
-                <span>Product One</span>
-                <span>$100</span>
+              {
+                order?.cartItems.map((item)=>(
+                  <li key={item.productId} className="flex items-center justify-between">
+                <span>Title: {item?.title}</span>
+                <span>Quantity: {item?.quantity}</span>
+                <span>Price: ${item?.price}</span>
               </li>
+                ))
+              }
             </ul>
           </div>
         </div>
@@ -47,12 +71,12 @@ const UserOrderDetailsView = () => {
           <div className="grid gap-2">
             <div className="font-medium">Shipping Info</div>
             <div className="grid gap-0.5 text-muted-foreground">
-              <span>Raj Tharu</span>
-              <span>16 Madrid St</span>
-              <span>Scarborough</span>
-              <span>M1P 4L8</span>
-              <span>2424534535</span>
-              <span>You are welcome</span>
+              <span>{user?.userName}</span>
+              <span>{order?.addressInfo?.address}</span>
+              <span>{order?.addressInfo?.city}</span>
+              <span>{order?.addressInfo?.pincode}</span>
+              <span>{order?.addressInfo?.phone}</span>
+              <span>{order?.addressInfo?.notes}</span>
             </div>
           </div>
         </div>

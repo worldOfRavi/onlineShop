@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import accountImage from "../../assets/account.jpg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Address from "../../components/user-view/address";
 import UserOrders from "../../components/user-view/orders";
 
 const UserAccount = () => {
+ 
   return (
     <div className="flex flex-col">
       <div className="relative h-[300px] w-full overflow-hidden">
@@ -23,7 +24,7 @@ const UserAccount = () => {
           </TabsList>
           <TabsContent value="orders">
           {/* user orders */}
-            <UserOrders />
+          <UserOrders />
           </TabsContent>
           <TabsContent value="address">
           {/* user address */}

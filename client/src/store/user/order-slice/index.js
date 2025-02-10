@@ -6,7 +6,8 @@ const initialState = {
     isloading : false,
     approvedURL : null,
     orderId : null,
-    order:null,
+    orderList : [],
+    orderDetails : null
 
 }
 
@@ -45,10 +46,51 @@ export const captureOrderPayment  = createAsyncThunk("/order/captureOrderPayment
         }
     }
 )
+
+// function to fetch all the order List
+export const getAllOrdersByUser  = createAsyncThunk("/getAllOrderByUser/getAllOrdersByUser",
+    async(userId, {rejectWithValue}) =>{
+        try {
+            const response  = await axios.get(`http://localhost:5000/api/user/order/fetch/${userId}`);
+            return response.data
+        } catch (error) {
+            if (error.response) {
+                const { data } = error.response;
+                return rejectWithValue(data);
+              } else {
+                console.log("Unexpected error ", error.message);
+                throw new Error("An unexpected error occurred");
+              }
+        }
+    }
+)
+
+
+// function to make the order confirm after the payment
+export const getOrderDetails  = createAsyncThunk("/order/getOrderDetails",
+    async(id, {rejectWithValue}) =>{
+        try {
+            const response  = await axios.get(`http://localhost:5000/api/user/order/get/${id}`);
+            return response.data
+        } catch (error) {
+            if (error.response) {
+                const { data } = error.response;
+                return rejectWithValue(data);
+              } else {
+                console.log("Unexpected error ", error.message);
+                throw new Error("An unexpected error occurred");
+              }
+        }
+    }
+)
 const orderSlice = createSlice({
     name:"orderSlice",
     initialState,
-    reducers : {},
+    reducers : {
+        resetOrderDetails : (state) =>{
+            state.orderDetails = null
+        }
+    },
     extraReducers :(builder) =>{
         builder.addCase(createOrderPayment.pending , (state)=>{
             state.isloading = true
@@ -60,15 +102,23 @@ const orderSlice = createSlice({
             sessionStorage.setItem("currentOrderId", JSON.stringify(action.payload.orderId));
         }).addCase(createOrderPayment.rejected, (state)=>{
             state.isloading = false
-        }).addCase(captureOrderPayment.pending , (state)=>{
+        }).addCase(getAllOrdersByUser.pending , (state)=>{
             state.isloading = true
-        }).addCase(captureOrderPayment.fulfilled, (state, action)=>{
+        }).addCase(getAllOrdersByUser.fulfilled , (state,action)=>{
             state.isloading = false;
-            state.order = action.payload.data
-        }).addCase(captureOrderPayment.rejected, (state)=>{
+            state.orderList = action.payload.data
+        }).addCase(getAllOrdersByUser.rejected , (state)=>{
+            state.isloading = false
+        }).addCase(getOrderDetails.pending , (state)=>{
+            state.isloading = true
+        }).addCase(getOrderDetails.fulfilled , (state,action)=>{
+            state.isloading = false;
+            state.orderDetails = action.payload.data
+        }).addCase(getOrderDetails.rejected , (state)=>{
             state.isloading = false
         })
     }
 })
 
 export default orderSlice.reducer;
+export const {resetOrderDetails} = orderSlice.actions;
