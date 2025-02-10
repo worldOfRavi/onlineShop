@@ -12,7 +12,11 @@ import { Button } from "../ui/button";
 import { Dialog } from "../ui/dialog";
 import UserOrderDetailsView from "./order-details";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrdersByUser, getOrderDetails, resetOrderDetails } from "@/store/user/order-slice";
+import {
+  getAllOrdersByUser,
+  getOrderDetails,
+  resetOrderDetails,
+} from "@/store/user/order-slice";
 import { Badge } from "../ui/badge";
 
 const UserOrders = () => {
@@ -32,11 +36,11 @@ const UserOrders = () => {
   };
 
   // when ever the view details button is clicked, orderDetails will be changed and need to render new data.
-useEffect(()=>{
-  if(orderDetails !==null) setOpenOrderDetails(true)
-},[orderDetails])
+  useEffect(() => {
+    if (orderDetails !== null) setOpenOrderDetails(true);
+  }, [orderDetails]);
 
-console.log(orderDetails);
+  console.log(orderDetails);
 
   return (
     <Card>
@@ -66,28 +70,32 @@ console.log(orderDetails);
                   <TableCell>
                     <Badge
                       className={`py-1 px-3 ${
-                        order.orderStatus === "confirmed"
+                        order?.orderStatus === "confirmed"
                           ? "bg-green-600"
+                          : order?.orderStatus === "delivered"
+                          ? "bg-green-600"
+                          : order?.orderStatus === "rejected"
+                          ? "bg-red-600"
                           : "bg-black"
                       }`}
                     >
-                      {order.orderStatus}
+                      {order?.orderStatus}
                     </Badge>
                   </TableCell>
                   <TableCell>${order.totalAmount}</TableCell>
                   <TableCell>
                     <Dialog
                       open={openOrderDetails}
-                      onOpenChange={()=>{
+                      onOpenChange={() => {
                         setOpenOrderDetails(false);
                         // this function makes the orderDetails to null so that when we visit account page, order detials dialog does not popup by default.
-                        dispatch(resetOrderDetails())
+                        dispatch(resetOrderDetails());
                       }}
                     >
                       <Button onClick={() => handleOrderDetails(order._id)}>
                         View Details
                       </Button>
-                      <UserOrderDetailsView order = {orderDetails} />
+                      <UserOrderDetailsView order={orderDetails} />
                     </Dialog>
                   </TableCell>
                 </TableRow>

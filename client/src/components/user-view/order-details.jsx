@@ -5,10 +5,9 @@ import { Separator } from "../ui/separator";
 import { useSelector } from "react-redux";
 import { Badge } from "../ui/badge";
 
-const UserOrderDetailsView = ({order}) => {
-   
-  const {user} = useSelector(state=>state.authReducer);
-  
+const UserOrderDetailsView = ({ order }) => {
+  const { user } = useSelector((state) => state.authReducer);
+
   return (
     <DialogContent className="sm:max-w-[600px]">
       {/* order details */}
@@ -38,14 +37,18 @@ const UserOrderDetailsView = ({order}) => {
           <div className="flex items-center justify-between mt-2">
             <p className="font-medium">Order Status</p>
             <Badge
-                      className={`py-1 px-3 ${
-                        order?.orderStatus === "confirmed"
-                          ? "bg-green-600"
-                          : "bg-black"
-                      }`}
-                    >
-                      {order?.orderStatus}
-                    </Badge>
+              className={`py-1 px-3 ${
+                order?.orderStatus === "confirmed"
+                  ? "bg-green-600"
+                  : order?.orderStatus === "delivered"
+                  ? "bg-green-600"
+                  : order?.orderStatus === "rejected"
+                  ? "bg-red-600"
+                  : "bg-black"
+              }`}
+            >
+              {order?.orderStatus}
+            </Badge>
           </div>
         </div>
         <Separator />
@@ -54,15 +57,16 @@ const UserOrderDetailsView = ({order}) => {
           <div className="grid gap-2">
             <div className="font-medium">Order Details</div>
             <ul className="grid gap-3">
-              {
-                order?.cartItems.map((item)=>(
-                  <li key={item.productId} className="flex items-center justify-between">
-                <span>Title: {item?.title}</span>
-                <span>Quantity: {item?.quantity}</span>
-                <span>Price: ${item?.price}</span>
-              </li>
-                ))
-              }
+              {order?.cartItems.map((item) => (
+                <li
+                  key={item.productId}
+                  className="flex items-center justify-between"
+                >
+                  <span>Title: {item?.title}</span>
+                  <span>Quantity: {item?.quantity}</span>
+                  <span>Price: ${item?.price}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
