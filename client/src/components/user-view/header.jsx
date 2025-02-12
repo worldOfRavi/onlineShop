@@ -1,6 +1,11 @@
 import { LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,27 +28,43 @@ import { Label } from "../ui/label";
 // function to create menu items
 function MenuItems() {
   const navigate = useNavigate();
-  // const [getCurrentMenuItem, setGetCurrentMenuItem] = useState(null);
+
+  /*
+  state give the current url location from which I could get the pathname.
+  */
+  const location = useLocation();
+  /*
+get the url of the page from which I could extract the category or any parameter using searchParams and 
+using setSearchParams I can change the url 
+*/
+  const [searchParams, setSearchParams] = useSearchParams();
 
   function handleNavigation(getCurrentMenuItem) {
+    /*
+here the logic is, when we click on any nav button it will navigate us to listig page, but what we need here is to get the product according to the category,
+so for that we use location to get the pathname, If the location includes listing already, and the filter is not null means it could be men, women or something, then we have to change the url seachParams, for that we can use useSearchParams hook which gives a state searchParams which contains the search parameters and setSearchParams could be used to change the url.
+location.pathname.includes("listing") && currentFilters !== null
+      ? setSearchParams(`?category=${getCurrentMenuItem.id}`)
+      : navigate(getCurrentMenuItem.path);
+      in above line of code, location.pathname inludes listing and currentFilters is not null then It should go to listing page with some particular category which is received by this function which is used to change the url seach param as setSearchParams(`?category=${getCurrentMenuItem.id}`)
+
+      it only change the url, which is used lising page refer it for more logic.
+*/
     sessionStorage.removeItem("filters");
     const currentFilters =
-      getCurrentMenuItem.id !== "home"
+      getCurrentMenuItem.id !== "home" && getCurrentMenuItem.id !== "products"
         ? { category: [getCurrentMenuItem.id] }
         : null;
     sessionStorage.setItem("filters", JSON.stringify(currentFilters));
-    navigate(getCurrentMenuItem.path);
+    location.pathname.includes("listing") && currentFilters !== null
+      ? setSearchParams(`?category=${getCurrentMenuItem.id}`)
+      : navigate(getCurrentMenuItem.path);
   }
-  // useEffect(()=>{
-  //   handleNavigation(getCurrentMenuItem);
-  // },[getCurrentMenuItem])
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
       {shoppingViewMenuItems.map((menuItem) => (
         <Label
-          onClick={() => 
-            handleNavigation(menuItem)
-          }
+          onClick={() => handleNavigation(menuItem)}
           className="text-sm font-medium cursor-pointer"
           key={menuItem.id}
         >
@@ -78,7 +99,10 @@ function HeaderRightContent() {
           <span className="sr-only">User cart</span>
         </Button>
         {/* UsercartWrapper component contains all the cart item */}
-        <UserCartWrapper setOpenCartSheet={setOpenCartSheet} cartItems={cartItems} />
+        <UserCartWrapper
+          setOpenCartSheet={setOpenCartSheet}
+          cartItems={cartItems}
+        />
       </Sheet>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -112,7 +136,11 @@ const UserHeader = () => {
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/user/home" className="flex items-center gap-2">
-        <img src={appLogo} alt="logo" className="w-[65px] h-[62px] rounded-full" />
+          <img
+            src={appLogo}
+            alt="logo"
+            className="w-[65px] h-[62px] rounded-full"
+          />
           <span className="font-bold">Ecommerce</span>
         </Link>
         {/* this sheet content will be visisble only on small devices */}

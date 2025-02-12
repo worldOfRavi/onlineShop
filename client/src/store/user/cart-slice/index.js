@@ -49,8 +49,8 @@ export const fetchCartItems = createAsyncThunk(
         const { data } = error.response;
         return rejectWithValue(data);
       } else {
-        console.log("Unexpected error ", error.message);
-        throw new Error("An unexpected error occurred");
+        // console.log("Unexpected error ", error.message);
+        // throw new Error("An unexpected error occurred");
       }
     }
   }

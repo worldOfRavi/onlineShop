@@ -36,6 +36,13 @@ const UserListing = () => {
   // useSearchPrams hook to manage the URL
   const [searchParams, setSearchParams] = useSearchParams();
 
+  /*
+  when we click on some particular nav button, the url search params get changed which is handled in header component.
+  const categoryFilter = searchParams.get("category");
+  this give the category on which use clicked on, based on that we have to show the product which is used in dependency array while calling the filter function
+  */ 
+  const categoryFilter = searchParams.get("category");
+
   // state to manage the product details dialog
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
@@ -106,7 +113,14 @@ const UserListing = () => {
     });
   }
 
-  // fetch all list of product
+
+   // to set the default value for the filters of sort when the page load for the first time or when the page got refreshed.
+   useEffect(() => {
+    setSort("price-lowtohigh");
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+  }, [categoryFilter]);
+
+  // fetch all list of product based on given sorting
   useEffect(() => {
     if (filters !== null && sort !== null)
       dispatch(
@@ -114,11 +128,6 @@ const UserListing = () => {
       );
   }, [dispatch, filters, sort]);
 
-  // to set the default value for the filters of sort when the page load for the first time or when the page got refreshed.
-  useEffect(() => {
-    setSort("price-lowtohigh");
-    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-  }, []);
 
   // use of useSearchParams to change the url when filtering or sorting the products
   useEffect(() => {
