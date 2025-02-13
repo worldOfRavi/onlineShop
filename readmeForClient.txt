@@ -71,3 +71,11 @@ For order and payment options
 --- the app that you create will have its own Client ID, Secret key 1, email and password.
 --- but if you use the same email and password to for login then you wont be able to make any order for that, you can create any other person email id for testing purpose. for that follow the following steps
 -- click on Testing tools button and choose sandbox accounts and then create another account and use that account for testing purpose.
+
+
+
+
+so many functionalities are added in this project.
+
+- when we place an order and the payment is successful then the quantity of the ordered item is reduced from the stock.
+- based on the available stock, we show, no of quanity available if the quantity is less than or equal to 10, also show the out of stock if there is no more quantity available in the stock

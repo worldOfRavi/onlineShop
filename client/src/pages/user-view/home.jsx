@@ -47,11 +47,14 @@ const brandsWithIcons = [
   { id: "h&m", label: "H&N", icon: hnm },
 ];
 const UserHome = () => {
+
   // states to handle the slides for the banner
   const [currentSlide, setCurrentSlide] = useState(0);
   const { productList, productDetails } = useSelector(
     (state) => state.userProductReducer
   );
+  // console.log(productList);
+  
   const { user } = useSelector((state) => state.authReducer);
   // state to manage the product details dialog
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -94,6 +97,7 @@ const UserHome = () => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
     }, 5000);
 
+    // 
     return () => clearInterval(timer);
   }, []);
 

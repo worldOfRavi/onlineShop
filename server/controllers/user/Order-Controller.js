@@ -1,6 +1,7 @@
 import paypal from "../../helpers/Paypal.js";
 import Cart from "../../models/Cart.js";
 import Order from "../../models/Order.js";
+import Product from "../../models/Product.js";
 import handleError from "../../utils/error.js";
 
 class OrderController {
@@ -119,13 +120,26 @@ class OrderController {
 
       await Cart.findByIdAndDelete(getCartId);
 
+      /*
+      we after the order is made, we have to reduce the item quantity from the product stock for that, we get the cartItems from the
+      order then get the product with its id, and reduce the order item quantity from the total stock.
+      
+      */ 
+      for(let item of order.cartItems){
+        const product = await Product.findById(item.productId);
+        
+          if(!product) next(handleError(404, `Not enough item in the stock of ${item.title}`));
+          product.totalStock -= item.quantity;
+          await product.save();
+      }
+
       res.status(200).json({
         success: true,
         message: "Order confirmed",
         data: order,
       });
     } catch (error) {
-      console.log("Error while creating new order ", error.message);
+      console.log("Error while capturing the payment ", error.message);
       next(error);
     }
   }

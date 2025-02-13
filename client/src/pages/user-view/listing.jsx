@@ -31,6 +31,8 @@ const UserListing = () => {
 
   // state to holds the filter options
   const [filters, setFilters] = useState({});
+  console.log(filters);
+  
   // state to hold the sort option
   const [sort, setSort] = useState(null);
   // useSearchPrams hook to manage the URL
@@ -53,7 +55,6 @@ const UserListing = () => {
 
   // function to handle the change in filter options
   function handleFilter(getSectionId, getCurrentOption) {
-    // console.log(getSectionId, getCurrentOption);
     let cpyFilters = { ...filters };
     // find the category if it present in the filter object or not, if not set the getSectionId as key and  getCurrentOption in an array as value of object
     const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
@@ -113,7 +114,6 @@ const UserListing = () => {
     });
   }
 
-
    // to set the default value for the filters of sort when the page load for the first time or when the page got refreshed.
    useEffect(() => {
     setSort("price-lowtohigh");
@@ -142,6 +142,10 @@ const UserListing = () => {
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
+
+
+console.log(productList, "productList");
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6 ">
