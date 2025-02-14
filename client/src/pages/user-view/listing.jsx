@@ -26,13 +26,19 @@ const UserListing = () => {
   const { productList, productDetails } = useSelector(
     (state) => state.userProductReducer
   );
+
+  const { cartItems } = useSelector(
+    (state) => state.cartSlice
+  );
+  // console.log(cartItems, "cartItems");
+  
+
   const { user } = useSelector((state) => state.authReducer);
   const { toast } = useToast();
 
   // state to holds the filter options
   const [filters, setFilters] = useState({});
-  console.log(filters);
-  
+
   // state to hold the sort option
   const [sort, setSort] = useState(null);
   // useSearchPrams hook to manage the URL
@@ -42,7 +48,7 @@ const UserListing = () => {
   when we click on some particular nav button, the url search params get changed which is handled in header component.
   const categoryFilter = searchParams.get("category");
   this give the category on which use clicked on, based on that we have to show the product which is used in dependency array while calling the filter function
-  */ 
+  */
   const categoryFilter = searchParams.get("category");
 
   // state to manage the product details dialog
@@ -101,8 +107,29 @@ const UserListing = () => {
   };
 
   // function to handle addtocart item
-  function handleAddTocart(getProductId) {
-      dispatch(
+  function handleAddTocart(getProductId, getTotalStock) {
+  let getCartItems = cartItems || []; //if the cartItems is empty then it would be empty array
+
+  if(getCartItems.length){
+    const indexOfCurrentCartItem = getCartItems.findIndex((item)=>item.productId === getProductId);
+    if(indexOfCurrentCartItem > -1){
+      if((getCartItems[indexOfCurrentCartItem].quantity +1) > 5){
+        toast({
+          title:`You can add only 5 items at once`,
+          variant:"destructive"
+        })
+        return
+      }
+      if((getCartItems[indexOfCurrentCartItem].quantity +1) > getTotalStock){
+        toast({
+          title:`We have only ${getTotalStock} items`,
+          variant:"destructive"
+        })
+        return
+      }
+    }
+  }
+    dispatch(
       addToCartItem({ userId: user?.id, productId: getProductId, quantity: 1 })
     ).then((data) => {
       if (data?.payload?.success) {
@@ -114,8 +141,8 @@ const UserListing = () => {
     });
   }
 
-   // to set the default value for the filters of sort when the page load for the first time or when the page got refreshed.
-   useEffect(() => {
+  // to set the default value for the filters of sort when the page load for the first time or when the page got refreshed.
+  useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
   }, [categoryFilter]);
@@ -127,7 +154,6 @@ const UserListing = () => {
         fetchFilteredProducts({ filterParams: filters, sortParams: sort })
       );
   }, [dispatch, filters, sort]);
-
 
   // use of useSearchParams to change the url when filtering or sorting the products
   useEffect(() => {
@@ -143,9 +169,7 @@ const UserListing = () => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-
-console.log(productList, "productList");
-
+  // console.log(productList, "productList");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6 ">
@@ -203,6 +227,7 @@ console.log(productList, "productList");
         open={openDetailsDialog}
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
+        handleAddTocart={handleAddTocart}
       />
     </div>
   );

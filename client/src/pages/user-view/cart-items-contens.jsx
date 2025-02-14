@@ -7,6 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 const UserCartItemsContent = ({ cartItem }) => {
   const { user } = useSelector((state) => state.authReducer);
+   const { productList } = useSelector(
+      (state) => state.userProductReducer
+    );
   const { toast } = useToast();
 
   const dispatch = useDispatch();
@@ -21,12 +24,36 @@ const UserCartItemsContent = ({ cartItem }) => {
 
   // function to update cart item update
   function updateCartItemQuantity(getCartItem, typeOfAction) {
+    if(typeOfAction === "plus"){
+      const currentProduct = productList?.filter(item=>item._id ===getCartItem.productId );
+      // console.log(currentProduct);
+      
+      if((getCartItem.quantity + 1) > 5){
+        toast({
+          title : `You can add only 5 items at a time`,
+          variant : "destructive"
+        })
+        return
+      }
+      if((getCartItem.quantity + 1) > currentProduct[0].totalStock){
+        toast({
+          title : `We have only ${currentProduct[0].totalStock} item at this moment`,
+          variant : "destructive"
+        })
+        return
+      }
+      
+    }
+    
+
+    // const current
+    
     dispatch(
       updateCartItems({
         userId: user?.id,
         productId: getCartItem?.productId,
         quantity:
-          typeOfAction === "add"
+          typeOfAction === "plus"
             ? getCartItem?.quantity + 1
             : getCartItem?.quantity - 1,
       })
@@ -62,7 +89,7 @@ const UserCartItemsContent = ({ cartItem }) => {
           </Button>
           <span className="font-semibold">{cartItem?.quantity}</span>
           <Button
-            onClick={() => updateCartItemQuantity(cartItem, "add")}
+            onClick={() => updateCartItemQuantity(cartItem, "plus")}
             variant="outline"
             className="w-8 h-8 rounded-full"
             size="icon"

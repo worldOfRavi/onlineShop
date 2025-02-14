@@ -10,24 +10,14 @@ import { StarIcon } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
+const ProductDetailsDialog = ({ open, setOpen, productDetails, handleAddTocart }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.authReducer);
+   const { productList } = useSelector(
+      (state) => state.userProductReducer
+    );
   const { toast } = useToast();
-    // function to handle addtocart item
-  function handleAddTocart(getProductId) {
-      dispatch(
-      addToCartItem({ userId: user?.id, productId: getProductId, quantity: 1 })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.id));
-        toast({
-          title: "Item added to your cart",
-        });
-      }
-    });
-  }
-
+ 
   // here handleProductDetailsDialog funtion set the setOpen to false which closes the dialog, but the productDetails will remain same as the last product that has been clicked, so when we come back to listing page from some other page, the productDetails would appear by its on. so to make the productDetails to null, call setOpenProductDetails function which is defined in the userProduct slice.
   function handleProductDetailsDialog(){
     setOpen(false);
@@ -78,7 +68,7 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
             <span className="text-muted-foreground">(4.5)</span>
           </div>
           <div className="mt-5 mb-4">
-            <Button disabled={productDetails?.totalStock === 0} onClick={()=>handleAddTocart(productDetails?._id)}  className="w-full">{productDetails?.totalStock === 0 ? "Out of stock" : "Add to Cart"}</Button>
+            <Button disabled={productDetails?.totalStock === 0} onClick={()=>handleAddTocart(productDetails?._id, productDetails?.totalStock)}  className="w-full">{productDetails?.totalStock === 0 ? "Out of stock" : "Add to Cart"}</Button>
           </div>
           <Separator />
           <div className="max-h-[300px] overflow-auto">

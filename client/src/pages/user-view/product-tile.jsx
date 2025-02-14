@@ -56,7 +56,7 @@ const UserProductTile = ({ product, handleProductDetails, handleAddTocart }) => 
         </div>
       </div>
       <CardFooter>
-            <Button onClick={()=>handleAddTocart(product?._id)} disabled={product?.totalStock ===  0} className={` w-full`}>{product?.totalStock ===  0 ? "Out of stock" : "Add to cart"}</Button>
+            <Button onClick={()=>handleAddTocart(product?._id, product?.totalStock)} disabled={product?.totalStock ===  0} className={` w-full`}>{product?.totalStock ===  0 ? "Out of stock" : "Add to cart"}</Button>
           </CardFooter>
     </Card>
   );
