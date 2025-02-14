@@ -47,7 +47,6 @@ const brandsWithIcons = [
   { id: "h&m", label: "H&N", icon: hnm },
 ];
 const UserHome = () => {
-
   // states to handle the slides for the banner
   const [currentSlide, setCurrentSlide] = useState(0);
   const { productList, productDetails } = useSelector(

@@ -78,7 +78,7 @@ const ProductDetailsDialog = ({ open, setOpen, productDetails }) => {
             <span className="text-muted-foreground">(4.5)</span>
           </div>
           <div className="mt-5 mb-4">
-            <Button onClick={()=>handleAddTocart(productDetails?._id)}  className="w-full">Add to Cart</Button>
+            <Button disabled={productDetails?.totalStock === 0} onClick={()=>handleAddTocart(productDetails?._id)}  className="w-full">{productDetails?.totalStock === 0 ? "Out of stock" : "Add to Cart"}</Button>
           </div>
           <Separator />
           <div className="max-h-[300px] overflow-auto">

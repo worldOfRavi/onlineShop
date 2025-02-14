@@ -14,7 +14,7 @@ const UserProductTile = ({ product, handleProductDetails, handleAddTocart }) => 
             alt={product?.title}
             className="w-full h-[300px] object-cover rounded-t-lg"
           />
-          {product?.totalStock <=  10 ? (
+          {product?.totalStock <=  10 && product?.totalStock >=1   ? (
             <Badge className="absolute top-2 right-2 bg-red-500 hover:bg-red-600">
               {`Only ${product?.totalStock} item left`}
             </Badge>
@@ -56,7 +56,7 @@ const UserProductTile = ({ product, handleProductDetails, handleAddTocart }) => 
         </div>
       </div>
       <CardFooter>
-            <Button onClick={()=>handleAddTocart(product?._id)} diabled={product?.totalStock ===  0} className={`${product?.totalStock ===  0 ? "cursor-not-allowed" : ""}  w-full`}>Add to cart</Button>
+            <Button onClick={()=>handleAddTocart(product?._id)} disabled={product?.totalStock ===  0} className={` w-full`}>{product?.totalStock ===  0 ? "Out of stock" : "Add to cart"}</Button>
           </CardFooter>
     </Card>
   );
