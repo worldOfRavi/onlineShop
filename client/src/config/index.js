@@ -146,6 +146,11 @@ export const shoppingViewMenuItems = [
         label:"Accessories",
         path:"/user/listing"
     },
+    {
+        id:"search",
+        label:"Search",
+        path:"/user/search"
+    },
 ]
 
 

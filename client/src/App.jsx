@@ -21,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import AdminOrdersView from "./pages/admin-view/orders";
 import PaypalReturnPage from "./pages/user-view/paypal-return";
 import PaymentSuccessPage from "./pages/user-view/payment-success";
+import SearchProduct from "./pages/user-view/search-product";
 
 const App = () => {
 
@@ -64,6 +65,7 @@ const App = () => {
           <Route path="checkout" element={<UserCheckout />} />
           <Route path="paypal-return" element={<PaypalReturnPage />} />
           <Route path="payment-success" element={<PaymentSuccessPage />} />
+          <Route path="search" element={<SearchProduct />} />
         </Route>
         <Route path="/unauth-page"  element={<UnAuthPage /> } />
         <Route path="*" element={<NotFound />} />
