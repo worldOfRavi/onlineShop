@@ -5,7 +5,7 @@ import { Button } from '../ui/button'
 
 const AddressCard = ({addressInfo, deleteAddress,editAddress, setAddressInfo}) => {
   return (
-   <Card  onClick={()=>setAddressInfo(addressInfo)}>
+   <Card  className="cursor-pointer" onClick={()=>setAddressInfo(addressInfo)}>
         <CardContent className = "grid p-4 gap-4">
         <Label>Address: {addressInfo?.address}</Label>
         <Label>city: {addressInfo?.city}</Label>

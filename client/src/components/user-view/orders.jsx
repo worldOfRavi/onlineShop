@@ -40,7 +40,6 @@ const UserOrders = () => {
     if (orderDetails !== null) setOpenOrderDetails(true);
   }, [orderDetails]);
 
-  console.log(orderDetails);
 
   return (
     <Card>
