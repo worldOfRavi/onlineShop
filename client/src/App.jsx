@@ -45,9 +45,7 @@ const App = () => {
       {/* common components */}
 
       <Routes>
-      {/* <Route path="/" element={<}> 
-        <Route path="/auth/login" element={<Login />} />
-      </Route> */}
+        <Route path="/" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}></CheckAuth>}/>
         <Route path="/auth" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}><AuthLayout /></CheckAuth>}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
