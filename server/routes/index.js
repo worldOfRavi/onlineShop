@@ -7,6 +7,7 @@ import cartRouter from "./user/cart-routes.js"
 import addressRouter from "./user/address-routes.js"
 import orderRouter from "./user/order-routes.js"
 import searchRouter from "./user/search-routes.js"
+import reviewRouter from "./user/product-review-routes.js"
 const router  = express.Router();
 
 // auht route
@@ -29,5 +30,8 @@ router.use("/api/user/order", orderRouter);
 
 // product search route
 router.use("/api/user/search", searchRouter);
+
+// product review route
+router.use("/api/user/review", reviewRouter);
 
 export default router;

@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { resetSearchResult, searchProduct } from "@/store/user/search-slice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import UserProductTile from "./product-tile";
 import { useToast } from "@/hooks/use-toast";
 import { addToCartItem, fetchCartItems } from "@/store/user/cart-slice";
@@ -23,7 +23,8 @@ const SearchProduct = () => {
       (state) => state.userProductReducer
     );
 
-    const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
+    const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+    
 
   // function to handle addtocart item
   function handleAddTocart(getProductId, getTotalStock) {
