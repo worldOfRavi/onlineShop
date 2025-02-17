@@ -4,7 +4,7 @@ import ProductReviewController from '../../controllers/user/product-review-contr
 const router = express.Router();
 
 router.route("/add").post(ProductReviewController.addProductReview);
-router.route("/get").get(ProductReviewController.getProductReviews);
+router.route("/get/:productId").get(ProductReviewController.getProductReviews);
 
 
 export default router;
