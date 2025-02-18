@@ -72,7 +72,7 @@ const UserCheckout = () => {
         phone: addressInfo?.phone,
         notes: addressInfo?.notes,
       },
-      orderStatu: "pending",
+      orderStatus: "pending",
       paymentMethod: "paypal",
       paymentStatus: "pending",
       totalAmount: totalCartItemAmount,
@@ -122,7 +122,7 @@ const UserCheckout = () => {
           </div>
           <div className="mt-3">
             <Button onClick={handleInitialPaypalPayment} className="w-full">
-             {isPaymentStart ? "Creating payment please wait..." : "Checkout with Paypal"} 
+             {isPaymentStart ? "Processing Paypal Payment..." : "Checkout with Paypal"} 
             </Button>
           </div>
         </div>
