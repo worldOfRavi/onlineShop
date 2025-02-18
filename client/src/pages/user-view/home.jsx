@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import ProductDetailsDialog from "./product-details";
 import { addToCartItem, fetchCartItems } from "@/store/user/cart-slice";
 import { useToast } from "@/hooks/use-toast";
+import { getFeatureImages } from "@/store/common-slice";
 
 const slides = [bannerOne, bannerTwo, bannerThree];
 
@@ -57,6 +58,7 @@ const UserHome = () => {
   const { user } = useSelector((state) => state.authReducer);
   // state to manage the product details dialog
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+   const {featureImageList}  = useSelector(state=>state.commonFeature);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {toast}  = useToast();
@@ -93,12 +95,12 @@ const UserHome = () => {
   // useEffect hook with setInterval method for automatic slide
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-    }, 5000);
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length);
+    }, 3000);
 
     // 
     return () => clearInterval(timer);
-  }, []);
+  }, [featureImageList]);
 
   // fetching filtered data
   useEffect(() => {
@@ -112,16 +114,22 @@ const UserHome = () => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  // console.log(productList, "productLists");
+  //fetching featured images 
+   useEffect(()=>{
+      dispatch(getFeatureImages())
+    },[dispatch]);
+
+    console.log(featureImageList, "featureImageList");
+    
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* banner section start*/}
       <div className="relative w-full h-[600px] overflow-hidden">
-        {slides.map((banner, index) => (
+        {featureImageList && featureImageList.length>0 &&  featureImageList.map((banner, index) => (
           <img
             key={index}
-            src={banner}
+            src={banner.image}
             alt="Banner"
             className={`${
               index === currentSlide ? "opacity-100" : "opacity-0"
@@ -131,7 +139,7 @@ const UserHome = () => {
         <Button
           onClick={() =>
             setCurrentSlide(
-              (preSlide) => (preSlide - 1 + slides.length) % slides.length
+              (preSlide) => (preSlide - 1 + featureImageList.length) % featureImageList.length
             )
           }
           variant="outline"
@@ -142,7 +150,7 @@ const UserHome = () => {
         </Button>
         <Button
           onClick={() =>
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length)
+            setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length)
           }
           variant="outline"
           size="icon"

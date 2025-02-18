@@ -13,7 +13,8 @@ export default function ProductImageUpload({
   setUploadedImageUrl,
   imageLoading,
   setImageLoading,
-  isEditedMode
+  isEditedMode,
+  curstomStyle = false
 }) {
   const inputRef = useRef(null);
 //   console.log(file);
@@ -61,8 +62,8 @@ export default function ProductImageUpload({
   }
 
   return (
-    <div className="w-full max-w-md mx-auto mt-4">
-      <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
+    <div className={`w-full  mt-4 ${curstomStyle ? "" : "max-w-md mx-auto"}`}>
+      <Label className="text-lg font-semibold mb-2 block">{curstomStyle ? "Upload Feature Image" : "Upload Image"}</Label>
       <div
         onDragOver={handleOnDragOver}
         onDrop={handleOnDrop}
@@ -111,7 +112,7 @@ export default function ProductImageUpload({
           disabled={!file}
           onClick = {uploadImageToCloudinary}
         >
-          Upload Image
+          {curstomStyle ? "Upload Image to cloudinary" : "Upload Image"}
         </Button>
       </div>
     </div>

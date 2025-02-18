@@ -8,6 +8,7 @@ import addressRouter from "./user/address-routes.js"
 import orderRouter from "./user/order-routes.js"
 import searchRouter from "./user/search-routes.js"
 import reviewRouter from "./user/product-review-routes.js"
+import commonFeatureImageRouter from "./common/feature-image-router.js"
 const router  = express.Router();
 
 // auht route
@@ -33,5 +34,9 @@ router.use("/api/user/search", searchRouter);
 
 // product review route
 router.use("/api/user/review", reviewRouter);
+
+
+// common feature imges route
+router.use("/api/common/feature", commonFeatureImageRouter);
 
 export default router;
