@@ -79,3 +79,16 @@ so many functionalities are added in this project.
 
 - when we place an order and the payment is successful then the quantity of the ordered item is reduced from the stock.
 - based on the available stock, we show, no of quanity available if the quantity is less than or equal to 10, also show the out of stock if there is no more quantity available in the stock
+
+
+
+
+- while deploying the MERN project need to take care of so many things, see step by step.
+
+
+
+
+
+
+
+
