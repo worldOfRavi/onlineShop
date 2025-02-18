@@ -119,9 +119,6 @@ const UserHome = () => {
       dispatch(getFeatureImages())
     },[dispatch]);
 
-    console.log(featureImageList, "featureImageList");
-    
-
   return (
     <div className="flex flex-col min-h-screen">
       {/* banner section start*/}

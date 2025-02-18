@@ -7,7 +7,6 @@ class AddressController {
   static async addAddress(req, res, next) {
     try {
       const { userId, address, city, pincode, phone, notes } = req.body;
-      
       if (!userId || !address || !city || !pincode || !phone || !notes) {
         return next(handleError(400, "Invalid data provided"));
       }

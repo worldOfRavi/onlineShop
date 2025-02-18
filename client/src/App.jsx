@@ -37,7 +37,14 @@ const App = () => {
   // console.log(isAuthenticated, isLoading, user);
 
   if(isLoading) return <div className="w-sceen h-screen flex justify-center items-center">
-    <Skeleton className="w-[300px] h-[100px] rounded-full bg-slate-500" />
+    <div className="flex flex-col gap-5">
+    <Skeleton className="w-[700px] h-[300px] rounded-md bg-slate-500" />
+    <Skeleton className="w-[700px] h-[150px] rounded-md bg-slate-500" />
+    <div className="flex gap-5">
+    <Skeleton className="w-[300px] h-[50px] rounded-md bg-slate-500" />
+    <Skeleton className="w-[300px] h-[50px] rounded-md bg-slate-500" />
+    </div>
+    </div>
   </div>
 
   return (

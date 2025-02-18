@@ -83,8 +83,6 @@ const ProductDetailsDialog = ({
         reviewList.length
       : 0;
 
-  // console.log(reviewList,"Reviews");
-  console.log(averageReview, "averageReview");
 
   return (
     <Dialog open={open} onOpenChange={handleProductDetailsDialog}>
