@@ -12,7 +12,7 @@ export const addNewProduct = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const resonse = await axios.post(
-        "http://localhost:5000/api/admin/products/add",
+        `${import.meta.env.VITE_API_URL}/api/admin/products/add`,
         formData,
         {
           withCredentials: true,
@@ -38,7 +38,7 @@ export const fetchAllProducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/admin/products/get",
+        `${import.meta.env.VITE_API_URL}/api/admin/products/get`,
         {
           withCredentials: true,
         }
@@ -67,7 +67,7 @@ export const editProduct = createAsyncThunk(
     
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin/products/edit/${id}`, formData,
+        `${import.meta.env.VITE_API_URL}/api/admin/products/edit/${id}`, formData,
         {
           withCredentials: true,
         }
@@ -93,7 +93,7 @@ export const deleteProduct = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/admin/products/delete/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/products/delete/${id}`,
         {
           withCredentials: true,
         }

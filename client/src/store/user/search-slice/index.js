@@ -10,7 +10,7 @@ const initialState = {
 export const searchProduct = createAsyncThunk("/user/searchProduct",
     async(keyword, {rejectWithValue})=>{
         try {
-            const response = await axios.get(`http://localhost:5000/api/user/search/${keyword}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/search/${keyword}`);
             return response.data
         } catch (error) {
             if (error.response) {

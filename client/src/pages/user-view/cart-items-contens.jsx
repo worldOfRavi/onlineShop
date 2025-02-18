@@ -42,12 +42,7 @@ const UserCartItemsContent = ({ cartItem }) => {
         })
         return
       }
-      
     }
-    
-
-    // const current
-    
     dispatch(
       updateCartItems({
         userId: user?.id,

@@ -19,13 +19,13 @@ export const fetchFilteredProducts = createAsyncThunk(
       });
 
       const response = await axios.get(
-        `http://localhost:5000/api/user/products/get?${query}`,
+        `${import.meta.env.VITE_API_URL}/api/user/products/get?${query}`,
         {
           withCredentials: true,
         }
       );
       // else we can pass the filters and the sort as params separate from the URL as the additional data
-      // const response  = await axios.get(`http://localhost:5000/api/user/products/get`,{params:{...filterParams, sort:sortParams}},{
+      // const response  = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/products/get`,{params:{...filterParams, sort:sortParams}},{
       //     withCredentials:true
       // });
       return response.data;
@@ -48,7 +48,7 @@ export const fetchProductDetail = createAsyncThunk(
     
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/user/products/get/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/user/products/get/${id}`,
         {
           withCredentials: true,
         }

@@ -12,7 +12,7 @@ export const addFeatureImage = createAsyncThunk(
   async (image, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/common/feature/add`,{image} // here image is single item so we need to wrap it in an object
+        `${import.meta.env.VITE_API_URL}/api/common/feature/add`,{image} // here image is single item so we need to wrap it in an object
       );
 
       return response.data;
@@ -37,7 +37,7 @@ export const deleteFeatureImage = createAsyncThunk(
     
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/common/feature/delete/${imageId}` // here image is single item so we need to wrap it in an object
+        `${import.meta.env.VITE_API_URL}/api/common/feature/delete/${imageId}` // here image is single item so we need to wrap it in an object
       );
 
       return response.data;
@@ -61,7 +61,7 @@ export const getFeatureImages = createAsyncThunk(
     
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/common/feature/get`,
+        `${import.meta.env.VITE_API_URL}/api/common/feature/get`,
       );
 
       return response.data;

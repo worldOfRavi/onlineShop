@@ -15,7 +15,7 @@ const initialState = {
 export const createOrderPayment  = createAsyncThunk("/order/createPayment",
     async(orderData, {rejectWithValue}) =>{
         try {
-            const response  = await axios.post("http://localhost:5000/api/user/order/create", orderData);
+            const response  = await axios.post(`${import.meta.env.VITE_API_URL}/api/user/order/create`, orderData);
             return response.data
         } catch (error) {
             if (error.response) {
@@ -33,7 +33,7 @@ export const createOrderPayment  = createAsyncThunk("/order/createPayment",
 export const captureOrderPayment  = createAsyncThunk("/order/captureOrderPayment",
     async({paymentId, payerId, orderId}, {rejectWithValue}) =>{
         try {
-            const response  = await axios.post("http://localhost:5000/api/user/order/capture", {paymentId, payerId, orderId});
+            const response  = await axios.post(`${import.meta.env.VITE_API_URL}/api/user/order/capture`, {paymentId, payerId, orderId});
             return response.data
         } catch (error) {
             if (error.response) {
@@ -51,7 +51,7 @@ export const captureOrderPayment  = createAsyncThunk("/order/captureOrderPayment
 export const getAllOrdersByUser  = createAsyncThunk("/getAllOrderByUser/getAllOrdersByUser",
     async(userId, {rejectWithValue}) =>{
         try {
-            const response  = await axios.get(`http://localhost:5000/api/user/order/fetch/${userId}`);
+            const response  = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/order/fetch/${userId}`);
             return response.data
         } catch (error) {
             if (error.response) {
@@ -70,7 +70,7 @@ export const getAllOrdersByUser  = createAsyncThunk("/getAllOrderByUser/getAllOr
 export const getOrderDetails  = createAsyncThunk("/order/getOrderDetails",
     async(id, {rejectWithValue}) =>{
         try {
-            const response  = await axios.get(`http://localhost:5000/api/user/order/get/${id}`);
+            const response  = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/order/get/${id}`);
             return response.data
         } catch (error) {
             if (error.response) {

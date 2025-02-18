@@ -53,7 +53,7 @@ export default function ProductImageUpload({
     data.append('my_file',file);
     // console.log(data);
     setImageLoading(true)
-    const response  = await axios.post("http://localhost:5000/api/admin/products/upload-image", data);
+    const response  = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/products/upload-image`, data);
 
     if(response?.data?.result?.url){
         setImageLoading(false);

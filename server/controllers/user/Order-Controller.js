@@ -29,8 +29,8 @@ class OrderController {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: "http://localhost:5173/user/paypal-return", //when the payment is initiated, then our app exit and redirected to approvalLink and come back to paypal-return page
-          cancel_url: "http://localhost:5173/user/paypal-cancel",
+          return_url: `${process.env.CLIENT_BASE_URL}/user/paypal-return`, //when the payment is initiated, then our app exit and redirected to approvalLink and come back to paypal-return page
+          cancel_url: `${process.env.CLIENT_BASE_URL}/user/paypal-cancel`,
         },
         transactions: [
           {
