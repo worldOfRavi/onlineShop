@@ -63,6 +63,8 @@ const AdminProducts = () => {
               setCurrentEditedId(null);
               setFormData(initialFormData);
               setOpenCreateProductDialog(false);
+              setImageFile(null)
+              setUploadedImageUrl("")
             }
           }
         )
@@ -80,6 +82,7 @@ const AdminProducts = () => {
             setFormData(initialFormData);
             setOpenCreateProductDialog(false);
             dispatch(fetchAllProducts());
+            setImageFile(null)
           } else {
             toast({
               title: "Something went wrong...",
