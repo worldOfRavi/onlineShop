@@ -4,6 +4,10 @@ import { Navigate, useLocation } from "react-router-dom";
 const CheckAuth = ({ isAuthenticated, user, children }) => {
   const location = useLocation();
   
+  /*
+  Is the pathname is /, and the user is not authenticated then navigate the user to login page
+  if the user is authenticated and then nagivate the user based on its role
+  */ 
   if(location.pathname === "/"){
     if(!isAuthenticated){
       return <Navigate to={"/auth/login"} />

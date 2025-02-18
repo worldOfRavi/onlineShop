@@ -15,6 +15,7 @@ const UserCheckout = () => {
   
 
   const [addressInfo, setAddressInfo] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState(null);
   const dispatch = useDispatch();
   const [isPaymentStart, setIsPaymentStart] = useState(false);
 
@@ -103,7 +104,7 @@ const UserCheckout = () => {
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5 p-5">
-        <Address setAddressInfo={setAddressInfo} />
+        <Address selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} setAddressInfo={setAddressInfo} />
         <div className="flex flex-col gap-5 p-5">
           {cartItems && cartItems.length > 0 ? (
             cartItems.map((item) => (
@@ -121,7 +122,7 @@ const UserCheckout = () => {
           </div>
           <div className="mt-3">
             <Button onClick={handleInitialPaypalPayment} className="w-full">
-              Checkout with Paypal
+             {isPaymentStart ? "Creating payment please wait..." : "Checkout with Paypal"} 
             </Button>
           </div>
         </div>
